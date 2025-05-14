@@ -7,7 +7,7 @@ services:
       - "7474:7474" # HTTP (Browser access)
       - "7687:7687" # Bolt (Driver connection)
     environment:
-      - NEO4J_AUTH=neo4j/test123
+      - NEO4J_AUTH=neo4j/test1234
     volumes:
       - neo4j_data:/data
 
