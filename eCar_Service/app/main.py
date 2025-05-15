@@ -1,19 +1,12 @@
-from fastapi import FastAPI,HTTPException
-from app import config 
-from app.models.responses import *
-from app.models.requests import *
-from app.services.client_service import ClientService
+from fastapi import FastAPI
+from app.routes import client_routes,admin_routes,driver_routes
 
-app=FastAPI()
-
-service=ClientService()
+app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return{"message":"Welcome to eCar FastAPI Service!"}
+    return {"message": "Welcome to eCar FastAPI Service!"}
 
-@app.post("/client/",response_model=ClientDTO)
-def create_client(request:UserInsertRequest):
-    return service.create_client(request)
-
-
+app.include_router(client_routes.router)
+app.include_router(admin_routes.router)
+app.include_router(driver_routes.router)

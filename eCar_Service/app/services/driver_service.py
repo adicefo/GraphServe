@@ -1,16 +1,16 @@
 from datetime import datetime
 import uuid
-from app.models.domain import User, Client
-from app.models.responses import UserDTO, ClientDTO
+from app.models.domain import *
+from app.models.responses import *
 from app.models.requests import UserInsertRequest
 from app import config
 from neomodel import db
 from automapper import mapper
 
-class ClientService:
-    def create_client(self, request: UserInsertRequest):
-        if request.password != request.password_conifrm:
-            raise ValueError("Passwords do not match")
+class DriverService:
+    def create_driver(self,request:UserInsertRequest):
+        if request.password!=request.password_conifrm:
+            raise ValueError("Password do not match")
         user_uid = str(uuid.uuid4())
         user_node = User(
             uid=user_uid,
@@ -24,20 +24,20 @@ class ClientService:
             gender=request.gender,
             active=request.active,
             registration_date=datetime.now()
-).save()
+        ).save()
         
-        client_uid=str(uuid.uuid4())
-        client_node = Client(
-            cid=client_uid
+        driver_uid=str(uuid.uuid4())
+        driver_node = Driver(
+            did=driver_uid
         ).save()
 
-        client_node.user.connect(user_node)
+        driver_node.user.connect(user_node)
 
         user_dto = mapper.to(UserDTO).map(user_node)
 
-        client_dto = mapper.to(ClientDTO).map(client_node,fields_mapping={
+        driver_dto = mapper.to(DriverDTO).map(driver_node,fields_mapping={
             "user_id":user_node.uid,
             "user":user_dto
         })
 
-        return client_dto
+        return driver_dto

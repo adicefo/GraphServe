@@ -11,9 +11,11 @@ class User(StructuredNode):
     surname = StringProperty(required=True)
     email = EmailProperty()
     username = StringProperty()
-    telephoneNumber = StringProperty()
+    password=StringProperty()
+    password_confirm=StringProperty()
+    telephone_number = StringProperty()
     gender = StringProperty()
-    registrationDate = DateTimeProperty(default_now=True)
+    registration_date = DateTimeProperty(default_now=True)
     active = BooleanProperty(default=True)
 
       # This makes the uid a regular public field
@@ -21,8 +23,8 @@ class User(StructuredNode):
 # ---------- Driver Node ----------
 class Driver(StructuredNode):
     did=StringProperty(required=True)
-    numberOfClientsAmount = IntegerProperty(default=0)
-    numberOfHoursAmount = IntegerProperty(default=0)
+    number_of_clients_amount = IntegerProperty(default=0)
+    number_of_hours_amount = IntegerProperty(default=0)
 
     user = RelationshipTo(User, 'IS')
 
