@@ -1,6 +1,6 @@
 from neomodel import (
     StructuredNode, StringProperty, EmailProperty, DateTimeProperty, BooleanProperty,
-    IntegerProperty, RelationshipTo, UniqueIdProperty
+    IntegerProperty, RelationshipTo, UniqueIdProperty,FloatProperty
 )
 from datetime import datetime
 
@@ -43,4 +43,43 @@ class Admin(StructuredNode):
     aid=StringProperty(required=True)
     user = RelationshipTo(User, 'IS')
 
-     
+
+# ---------- Route Node ----------
+class Route(StructuredNode):
+    rid = StringProperty(required=True)
+    source_point_lat = FloatProperty()
+    source_point_lon = FloatProperty()
+    destination_point_lat = FloatProperty()
+    destination_point_lon = FloatProperty()
+    start_date = DateTimeProperty()
+    end_date = DateTimeProperty()
+    duration = IntegerProperty(default=0)
+    number_of_kilometers = FloatProperty()
+    full_price = FloatProperty()
+    paid = BooleanProperty(default=False)
+    status = StringProperty()
+
+    client = RelationshipTo('Client', 'OWNED_BY')
+    driver = RelationshipTo('Driver', 'DRIVEN_BY')
+
+# ---------- Vehicle Node ----------
+
+class Vehicle(StructuredNode):
+    vid = StringProperty(required=True)
+    available = BooleanProperty()
+    average_fuel_consumption = FloatProperty()
+    name = StringProperty(required=True)
+    image = StringProperty()  # or BinaryProperty
+    price = FloatProperty(required=True)
+
+class Rent(StructuredNode):
+    rent_id = StringProperty(required=True)
+    rent_date = DateTimeProperty()
+    end_date = DateTimeProperty()
+    number_of_days = IntegerProperty()
+    full_price = FloatProperty()
+    paid = BooleanProperty(default=False)
+    status = StringProperty()
+
+    vehicle = RelationshipTo('Vehicle', 'RENTED_VEHICLE')
+    client = RelationshipTo('Client', 'RENTED_BY')

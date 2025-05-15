@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 
 class UserDTO(BaseModel):
+    uid:str
     name: str
     surname: str
     email: Optional[EmailStr] = None
@@ -13,16 +14,56 @@ class UserDTO(BaseModel):
     active: Optional[bool] = True
 
 class DriverDTO(BaseModel):
+    did:str
     user_id: str  
     number_of_clients_amount: Optional[int] = None
     number_of_hours_amount: Optional[int] = None
     user: UserDTO  
 
 class ClientDTO(BaseModel):
+    cid:str
     user_id: str 
     image: Optional[bytes] = None
     user: UserDTO  
 
 class AdminDTO(BaseModel):
+    aid:str
     user_id: str  
     user: UserDTO  
+
+
+class RouteDTO(BaseModel):
+    rid: str
+    source_point_lat: Optional[float]
+    source_point_lon: Optional[float]
+    destination_point_lat: Optional[float]
+    destination_point_lon: Optional[float]
+    start_date: Optional[datetime]
+    end_date: Optional[datetime]
+    duration: Optional[int] = 0
+    number_of_kilometers: Optional[float]=0.0
+    full_price: Optional[float]=0.0
+    paid: Optional[bool] = False
+    status: Optional[str]
+    client:Optional[ClientDTO]
+    driver:Optional[DriverDTO]
+
+class VehicleDTO(BaseModel):
+    vid: str
+    available: Optional[bool]
+    average_fuel_consumption: Optional[float]
+    name: str
+    image: Optional[bytes]
+    price: float
+
+class RentDTO(BaseModel):
+    rid: str
+    rent_date: Optional[datetime]
+    end_date: Optional[datetime]
+    number_of_days: Optional[int]
+    full_price: Optional[float]
+    paid: Optional[bool] = False
+    status: Optional[str]
+    vehicle: Optional[VehicleDTO]
+    client: Optional[ClientDTO]
+

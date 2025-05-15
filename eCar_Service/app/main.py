@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routes import client_routes,admin_routes,driver_routes
+from app.routes import client_routes,admin_routes,driver_routes,route_routes
 
 app = FastAPI()
 
@@ -10,3 +10,4 @@ def read_root():
 app.include_router(client_routes.router)
 app.include_router(admin_routes.router)
 app.include_router(driver_routes.router)
+app.include_router(route_routes.router)
