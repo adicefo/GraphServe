@@ -32,15 +32,21 @@ class RouteService:
 
         rid=str(uuid.uuid4())
 
-        route=mapper.to(Route).map(request)
-        route.rid=rid
-        route.status="wait"
-        route.duration=0
-        route.number_of_kilometers=0.0
-        route.full_price=0.0
-        route.paid=False
+        route_node = Route(
+            rid=rid,
+            source_point_lat=request.source_point_lat,
+            source_point_lon=request.source_point_lon,
+            destination_point_lat=request.destination_point_lat,
+            destination_point_lon=request.destination_point_lon,
+            duration=0,
+            paid=False,
+            number_of_kilometers=0.0,
+            full_price=0.0,
+            status="wait",
+).save()
+       
         
-        route_node=route.save()
+    
         
 
         # Create relationships
