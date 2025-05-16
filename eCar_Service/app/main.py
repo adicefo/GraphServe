@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routes import client_routes,admin_routes,driver_routes,route_routes
+from app.routes import client_routes,admin_routes,driver_routes,route_routes,vehicle_routes,rent_routes
 
 app = FastAPI()
 
@@ -11,3 +11,5 @@ app.include_router(client_routes.router)
 app.include_router(admin_routes.router)
 app.include_router(driver_routes.router)
 app.include_router(route_routes.router)
+app.include_router(vehicle_routes.router)
+app.include_router(rent_routes.router)

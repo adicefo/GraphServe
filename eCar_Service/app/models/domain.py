@@ -73,7 +73,7 @@ class Vehicle(StructuredNode):
     price = FloatProperty(required=True)
 
 class Rent(StructuredNode):
-    rent_id = StringProperty(required=True)
+    rid = StringProperty(required=True)
     rent_date = DateTimeProperty()
     end_date = DateTimeProperty()
     number_of_days = IntegerProperty()
