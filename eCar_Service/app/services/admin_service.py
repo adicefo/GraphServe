@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
-from app.models.domain import *
-from app.models.responses import *
+from app.models.domain import Admin,User
+from app.models.responses import AdminDTO,UserDTO
 from app.models.requests import UserInsertRequest
 from app import config
 from neomodel import db

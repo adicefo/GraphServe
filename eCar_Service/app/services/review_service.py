@@ -5,8 +5,22 @@ from datetime import datetime
 import uuid
 from fastapi import HTTPException
 from automapper import mapper
+from neomodel import db
 
 class ReviewService:
+    @staticmethod
+    def first_route_between(client_id: str, driver_id: str) -> Route | None:
+        cypher = (
+            "MATCH (c:Client {cid:$cid})<-[:OWNED_BY]-(r:Route)-[:DRIVEN_BY]->(:Driver {did:$did}) "
+            "RETURN r LIMIT 1"
+        )
+        results, _ = db.cypher_query(cypher, {"cid": client_id, "did": driver_id})
+        if results:
+            # results[0][0] is the first row's first column (the Route node)
+            return Route.inflate(results[0][0])
+        return None
+    
+
     def create_review(self,request:ReviewInsertRequest):
         client = Client.nodes.get_or_none(cid=request.reviews_id)
         client_user = client.user.single()
@@ -18,11 +32,8 @@ class ReviewService:
         if not driver_user:
             raise HTTPException(404, f"User for driver ID '{request.driver_id}' not found")
         
-        #TODO:Fix this error about finding the route
-        existing_route = Route.nodes.filter(
-            client_cid=request.reviews_id,   
-            driver__did=request.reviewed_id   
-        ).first()
+        
+        existing_route = self.first_route_between(request.reviews_id,request.reviewed_id)
 
         if not existing_route:
             raise HTTPException(
@@ -39,7 +50,10 @@ class ReviewService:
                 "user": mapper.to(UserDTO).map(driver_user)
         })
 
-        route_dto=mapper.to(RouteDTO).map(existing_route)
+        route_dto=mapper.to(RouteDTO).map(existing_route,fields_mapping={
+            "client":client_dto,
+            "driver":driver_dto
+        })
 
         rid=str(uuid.uuid4())
 
@@ -60,3 +74,5 @@ class ReviewService:
             "route":route_dto
         })
         return review_dto
+    
+    

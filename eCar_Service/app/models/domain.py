@@ -18,7 +18,7 @@ class User(StructuredNode):
     registration_date = DateTimeProperty(default_now=True)
     active = BooleanProperty(default=True)
 
-      # This makes the uid a regular public field
+    
 
 # ---------- Driver Node ----------
 class Driver(StructuredNode):
@@ -27,7 +27,6 @@ class Driver(StructuredNode):
     number_of_hours_amount = IntegerProperty(default=0)
 
     user = RelationshipTo(User, 'IS')
-    route = RelationshipFrom('Route', 'DRIVEN_BY')
  
 
 # ---------- Client Node ----------
@@ -36,7 +35,6 @@ class Client(StructuredNode):
     image = StringProperty(required=False)
 
     user = RelationshipTo(User, 'IS')
-    route = RelationshipFrom('Route', 'OWNED_BY')
   
 # ---------- Admin Node ----------
 class Admin(StructuredNode):

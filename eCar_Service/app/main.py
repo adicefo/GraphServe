@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.routes import client_routes,admin_routes,driver_routes,route_routes,vehicle_routes,rent_routes,review_routes,notification_routes
-import app.models.domain
+
 app = FastAPI()
 
 @app.get("/")

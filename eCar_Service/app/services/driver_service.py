@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
-from app.models.domain import *
-from app.models.responses import *
+from app.models.domain import Driver,User
+from app.models.responses import DriverDTO,UserDTO
 from app.models.requests import UserInsertRequest
 from app import config
 from neomodel import db
