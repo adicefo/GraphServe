@@ -126,4 +126,7 @@ class NotificationInsertRequest(BaseModel):
     content:str
     image:Optional[str]=None
     for_client:Optional[bool]
+
+class StatisticsInsertRequest(BaseModel):
+    driver_id:str
     

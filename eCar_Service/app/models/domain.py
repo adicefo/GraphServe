@@ -103,3 +103,15 @@ class Notification(StructuredNode):
     adding_date = DateTimeProperty(default_now=True)
     for_client = BooleanProperty()
 
+
+# ---------- Statistics Node ----------
+class Statistics(StructuredNode):
+    sid = StringProperty(required=True)                 
+    number_of_hours = IntegerProperty()                
+    number_of_clients = IntegerProperty()               
+    price_amount = FloatProperty()                      
+
+    beginning_of_work = DateTimeProperty()              
+    end_of_work = DateTimeProperty()                    
+
+    driver = RelationshipTo('Driver', 'RECORDED_FOR')   # one statistics record → one driver

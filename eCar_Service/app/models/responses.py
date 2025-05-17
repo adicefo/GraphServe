@@ -84,3 +84,12 @@ class NotificationDTO(BaseModel):
     adding_date: Optional[datetime]
     for_client: Optional[bool]
 
+class StatisticsDTO(BaseModel):
+    sid: str
+    number_of_hours: Optional[int]
+    number_of_clients: Optional[int]
+    price_amount: Optional[float]
+    beginning_of_work: Optional[datetime]
+    end_of_work: Optional[datetime]
+    driver: Optional[DriverDTO]
+
