@@ -107,3 +107,23 @@ class RentInsertRequest(BaseModel):
         if values.end_date <= values.rent_date:
             raise ValueError("End date must be after rent date")
         return values
+
+class ReviewInsertRequest(BaseModel):
+    value:int
+    description: Optional[str]
+    reviews_id:str
+    reviewed_id:str
+
+    @field_validator('value')
+    @classmethod
+    def min_max_value(cls,value):
+        if value is not None and (value<1 or value>5):
+            raise ValueError("Value must be between 1 and 5")
+        return value
+    
+class NotificationInsertRequest(BaseModel):
+    title:str
+    content:str
+    image:Optional[str]=None
+    for_client:Optional[bool]
+    

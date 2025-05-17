@@ -9,7 +9,7 @@ from automapper import mapper
 
 class VehicleService:
     def create_vehicle(self,request:VehicleInsertRequest):
-        vehicle_vid=str(uuid.uuid4)
+        vehicle_vid=str(uuid.uuid4())
 
         vehicle_node=Vehicle(
             vid=vehicle_vid,

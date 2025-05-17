@@ -67,3 +67,20 @@ class RentDTO(BaseModel):
     vehicle: Optional[VehicleDTO]
     client: Optional[ClientDTO]
 
+class ReviewDTO(BaseModel):
+    rid: str
+    value: int
+    description: str
+    adding_date: Optional[datetime]=datetime.now()
+    client: Optional[ClientDTO]
+    driver: Optional[DriverDTO]
+    route: Optional[RouteDTO]
+
+class NotificationDTO(BaseModel):
+    nid: str
+    title: Optional[str]
+    content: Optional[str]
+    image: Optional[str] =None 
+    adding_date: Optional[datetime]
+    for_client: Optional[bool]
+

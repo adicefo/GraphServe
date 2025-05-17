@@ -1,6 +1,6 @@
 from neomodel import (
     StructuredNode, StringProperty, EmailProperty, DateTimeProperty, BooleanProperty,
-    IntegerProperty, RelationshipTo, UniqueIdProperty,FloatProperty
+    IntegerProperty, RelationshipTo, RelationshipFrom,UniqueIdProperty,FloatProperty
 )
 from datetime import datetime
 
@@ -27,7 +27,7 @@ class Driver(StructuredNode):
     number_of_hours_amount = IntegerProperty(default=0)
 
     user = RelationshipTo(User, 'IS')
-
+    route = RelationshipFrom('Route', 'DRIVEN_BY')
  
 
 # ---------- Client Node ----------
@@ -36,7 +36,7 @@ class Client(StructuredNode):
     image = StringProperty(required=False)
 
     user = RelationshipTo(User, 'IS')
-
+    route = RelationshipFrom('Route', 'OWNED_BY')
   
 # ---------- Admin Node ----------
 class Admin(StructuredNode):
@@ -72,6 +72,7 @@ class Vehicle(StructuredNode):
     image = StringProperty()  # or BinaryProperty
     price = FloatProperty(required=True)
 
+# ---------- Rent Node ----------
 class Rent(StructuredNode):
     rid = StringProperty(required=True)
     rent_date = DateTimeProperty()
@@ -83,3 +84,24 @@ class Rent(StructuredNode):
 
     vehicle = RelationshipTo('Vehicle', 'RENTED_VEHICLE')
     client = RelationshipTo('Client', 'RENTED_BY')
+
+# ---------- Review Node ----------
+class Review(StructuredNode):
+    rid=StringProperty(required=True)
+    value = IntegerProperty(required=True)
+    description = StringProperty(required=True)
+    adding_date = DateTimeProperty(default_now=True)
+
+    client = RelationshipTo('Client', 'REVIEWED_BY')
+    driver = RelationshipTo('Driver', 'REVIEWED_DRIVER')
+    route = RelationshipTo('Route', 'REVIEWED_ROUTE')
+
+# ---------- Notification Node ----------
+class Notification(StructuredNode):
+    nid=StringProperty(requried=True)
+    title = StringProperty()
+    content = StringProperty()
+    image = StringProperty()  
+    adding_date = DateTimeProperty(default_now=True)
+    for_client = BooleanProperty()
+

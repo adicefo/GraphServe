@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from app.routes import client_routes,admin_routes,driver_routes,route_routes,vehicle_routes,rent_routes
-
+from app.routes import client_routes,admin_routes,driver_routes,route_routes,vehicle_routes,rent_routes,review_routes,notification_routes
+import app.models.domain
 app = FastAPI()
 
 @app.get("/")
@@ -13,3 +13,5 @@ app.include_router(driver_routes.router)
 app.include_router(route_routes.router)
 app.include_router(vehicle_routes.router)
 app.include_router(rent_routes.router)
+app.include_router(review_routes.router)
+app.include_router(notification_routes.router)
