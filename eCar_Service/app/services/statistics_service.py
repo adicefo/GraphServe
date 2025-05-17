@@ -7,6 +7,32 @@ from fastapi import HTTPException
 from automapper import mapper
 
 class StatisticsService:
+
+    def get_all_statistics(self):
+        statistics_dto:list[StatisticsDTO]=[]
+
+        for statistics in Statistics.nodes.all():
+            driver=statistics.driver.single()
+            driver_user=driver.user.single()
+            driver_user_dto=mapper.to(UserDTO).map(driver_user)
+
+            driver_dto=mapper.to(DriverDTO).map(
+                driver,
+                fields_mapping={
+                    "user_id":driver_user.uid,
+                    "user":driver_user_dto
+                }
+            )
+
+            s_response=mapper.to(StatisticsDTO).map(
+                statistics,
+                fields_mapping={
+                    "driver":driver_dto
+                }
+            )
+            statistics_dto.append(s_response)
+        return statistics_dto
+
     def create_statistics(self,request:StatisticsInsertRequest):
         driver = Driver.nodes.get_or_none(did=request.driver_id)
         driver_user = driver.user.single()

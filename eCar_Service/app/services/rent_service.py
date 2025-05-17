@@ -7,6 +7,34 @@ from fastapi import HTTPException
 from automapper import mapper
 
 class RentService:
+    def get_all_rents(self):
+        rents_dto:list[RentDTO]=[]
+        for rent in Rent.nodes.all():
+            client=rent.client.single()
+            client_user=client.user.single()
+            client_user_dto = mapper.to(UserDTO).map(client_user)
+            client_dto=mapper.to(ClientDTO).map(
+                client,
+                fields_mapping={
+                    "user_id":client_user.uid,
+                    "user":client_user_dto
+                }
+            )
+
+            vehicle=rent.vehicle.single()
+            vehicle_dto=mapper.to(VehicleDTO).map(vehicle)
+
+            rent_dto=mapper.to(RentDTO).map(
+                rent,
+                fields_mapping={
+                    "client":client_dto,
+                    "vehicle":vehicle_dto
+                }
+            )
+            rents_dto.append(rent_dto)
+        return rents_dto
+    
+
     def create_rent(self,request:RentInsertRequest):
         client = Client.nodes.get_or_none(cid=request.client_id)
         client_user = client.user.single()

@@ -8,8 +8,48 @@ from fastapi import HTTPException
 from automapper import mapper
 
 class RouteService:
-    def create_route(self,request: RouteInsertRequest):
+    def get_all_routes(self):
+        routes_dto: list[RouteDTO] = []
 
+        for route in Route.nodes.all():  
+            
+            client = route.client.single()          
+            client_user = client.user.single()      
+            client_user_dto = mapper.to(UserDTO).map(client_user)
+            client_dto = mapper.to(ClientDTO).map(
+                client,
+                fields_mapping={
+                    "user_id": client_user.uid,
+                    "user": client_user_dto,
+                },
+            )
+
+           
+            driver = route.driver.single()           
+            driver_user = driver.user.single()       
+            driver_user_dto = mapper.to(UserDTO).map(driver_user)
+            driver_dto = mapper.to(DriverDTO).map(
+                driver,
+                fields_mapping={
+                    "user_id": driver_user.uid,
+                    "user": driver_user_dto,
+                },
+            )
+
+            
+            route_dto = mapper.to(RouteDTO).map(
+                route,
+                fields_mapping={
+                    "client": client_dto,
+                    "driver": driver_dto,
+                },
+            )
+            routes_dto.append(route_dto)
+
+        return routes_dto
+
+        
+    def create_route(self,request: RouteInsertRequest):
         client = Client.nodes.get_or_none(cid=request.client_id)
         client_user = client.user.single()
         if not client_user:
@@ -43,12 +83,8 @@ class RouteService:
             number_of_kilometers=0.0,
             full_price=0.0,
             status="wait",
-).save()
+            ).save()
        
-        
-    
-        
-
         # Create relationships
         route_node.client.connect(client)
         route_node.driver.connect(driver)

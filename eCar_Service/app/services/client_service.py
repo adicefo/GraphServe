@@ -8,6 +8,20 @@ from neomodel import db
 from automapper import mapper
 
 class ClientService:
+    def get_all_clients(self) -> list[ClientDTO]:
+        clients_dto: list[ClientDTO] = []
+
+        for client in Client.nodes.all():          
+            user = client.user.single()          
+            user_dto = mapper.to(UserDTO).map(user)
+
+            clinet_dto = mapper.to(ClientDTO).map(
+                client,
+                fields_mapping={"user_id": user.uid, "user": user_dto},
+            )
+            clients_dto.append(clinet_dto)
+
+        return clients_dto
     def create_client(self, request: UserInsertRequest):
         if request.password != request.password_conifrm:
             raise ValueError("Passwords do not match")

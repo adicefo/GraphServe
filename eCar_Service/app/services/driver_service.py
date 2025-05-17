@@ -8,6 +8,22 @@ from neomodel import db
 from automapper import mapper
 
 class DriverService:
+
+    def get_all_drivers(self)-> list[DriverDTO]:
+        drivers_dto:list[DriverDTO]=[]
+
+        for driver in Driver.nodes.all():
+            user = driver.user.single()          
+            user_dto = mapper.to(UserDTO).map(user)
+
+            driver_dto = mapper.to(DriverDTO).map(
+                driver,
+                fields_mapping={"user_id": user.uid, "user": user_dto},
+            )
+            drivers_dto.append(driver_dto)
+        return drivers_dto
+    
+
     def create_driver(self,request:UserInsertRequest):
         if request.password!=request.password_conifrm:
             raise ValueError("Password do not match")

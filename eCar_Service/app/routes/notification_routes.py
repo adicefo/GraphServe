@@ -8,6 +8,10 @@ router=APIRouter(prefix="/notification", tags= ["notification"])
 def get_notification_service():
     return NotificationService()
 
+@router.get("/",response_model=list[NotificationDTO])
+def get_all(service:NotificationService=Depends(get_notification_service)):
+    return service.get_all_notifications()
+
 @router.post(path="/",response_model=NotificationDTO)
 def create_notification(request:NotificationInsertRequest,service:NotificationService=Depends(get_notification_service)):
     return service.create_notification(request)

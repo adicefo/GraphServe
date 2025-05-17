@@ -8,6 +8,14 @@ from fastapi import HTTPException
 from automapper import mapper
 
 class VehicleService:
+    def get_all_vehicles(self):
+        vehicles_dto:list[VehicleDTO]=[]
+
+        for vehicle in Vehicle.nodes.all():
+            vehicle_dto=mapper.to(VehicleDTO).map(vehicle)
+            vehicles_dto.append(vehicle_dto)
+        return vehicles_dto
+    
     def create_vehicle(self,request:VehicleInsertRequest):
         vehicle_vid=str(uuid.uuid4())
 

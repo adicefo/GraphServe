@@ -8,6 +8,10 @@ router = APIRouter(prefix="/client", tags=["client"])
 def get_client_service():
     return ClientService()
 
+@router.get("/",response_model=list[ClientDTO])
+def get_all_clients(service:ClientService=Depends(get_client_service)):
+    return service.get_all_clients()
+
 @router.post("/", response_model=ClientDTO)
 def create_client(request: UserInsertRequest, service: ClientService = Depends(get_client_service)):
     return service.create_client(request)

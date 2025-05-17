@@ -20,6 +20,52 @@ class ReviewService:
             return Route.inflate(results[0][0])
         return None
     
+    def get_all_reviews(self):
+        reviews_dto:list[ReviewDTO]=[]
+
+        for review in Review.nodes.all():
+            client=review.client.single()
+            client_user=client.user.single()
+            client_user_dto=mapper.to(UserDTO).map(client_user)
+
+            client_dto=mapper.to(ClientDTO).map(
+                client,
+                fields_mapping={
+                    "user_id":client_user.uid,
+                    "user":client_user_dto
+                }
+            )
+
+            driver=review.driver.single()
+            driver_user=driver.user.single()
+            driver_user_dto=mapper.to(UserDTO).map(driver_user)
+            driver_dto=mapper.to(DriverDTO).map(
+                driver,
+                fields_mapping={
+                    "user_id":driver_user.uid,
+                    "user":driver_user_dto
+                }
+            )
+
+            route=review.route.single()
+            route_dto=mapper.to(RouteDTO).map(
+                route,
+                fields_mapping={
+                    "client":client_dto,
+                    "driver":driver_dto
+                }
+            )
+            review_dto=mapper.to(ReviewDTO).map(
+                review,
+                fields_mapping={
+                    "client":client_dto,
+                    "driver":driver_dto,
+                    "route":route_dto
+                }
+            )
+            reviews_dto.append(review_dto)
+        return reviews_dto
+    
 
     def create_review(self,request:ReviewInsertRequest):
         client = Client.nodes.get_or_none(cid=request.reviews_id)

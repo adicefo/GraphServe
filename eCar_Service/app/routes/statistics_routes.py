@@ -7,6 +7,10 @@ router=APIRouter(prefix="/statistics",tags=["statistics"])
 
 def get_statistics_service():
     return StatisticsService()
+
+@router.get("/",response_model=list[StatisticsDTO])
+def get_all(serivce:StatisticsService=Depends(get_statistics_service)):
+    return serivce.get_all_statistics()
 @router.post(path="/",response_model=StatisticsDTO)
 def create_statistics(request:StatisticsInsertRequest,service:StatisticsService=Depends(get_statistics_service)):
     return service.create_statistics(request)

@@ -7,6 +7,14 @@ from fastapi import HTTPException
 from automapper import mapper
 
 class NotificationService:
+    def get_all_notifications(self):
+         notifications:list[NotificationDTO]=[]
+
+         for n in Notification.nodes.all():
+              notification_dto=mapper.to(NotificationDTO).map(n)
+              notifications.append(notification_dto)
+         return notifications
+    
     def create_notification(self,request:NotificationInsertRequest):
          nid = str(uuid.uuid4())
 

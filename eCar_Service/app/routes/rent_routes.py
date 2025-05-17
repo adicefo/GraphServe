@@ -8,6 +8,10 @@ router = APIRouter(prefix="/rent", tags=["rent"])
 def get_rent_service():
     return RentService()
 
+@router.get("/",response_model=list[RentDTO])
+def get_all(service:RentService=Depends(get_rent_service)):
+    return service.get_all_rents()
+
 @router.post("/", response_model=RentDTO)
 def create_rent(request: RentInsertRequest, service: RentService = Depends(get_rent_service)):
     return service.create_rent(request)
