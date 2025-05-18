@@ -4,8 +4,10 @@ from app.models.requests import RouteInsertRequest
 from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,ResultPage
 from datetime import datetime
 import uuid
-from fastapi import HTTPException
+from fastapi import HTTPException,status
 from automapper import mapper
+from neomodel.exceptions import *
+
 
 class RouteService:
     def get_all_routes(self):
@@ -95,5 +97,47 @@ class RouteService:
 "client":client_dto,
 "driver":driver_dto
         })
+
+        return route_dto
+    def delete_route(self,rid:str)->RouteDTO:
+        
+        try:
+            route:Route=Route.nodes.get(rid=rid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Route with id '{rid}' not found",
+            )
+        client:Client=route.client.single()
+        client_user=client.user.single()
+        client_user_dto=mapper.to(UserDTO).map(client_user)
+        client_dto=mapper.to(ClientDTO).map(
+            client,
+            fields_mapping={
+                "user_id":client_user.uid,
+                "user":client_user_dto
+            }
+        )
+
+        driver:Driver=route.driver.single()
+        driver_user=driver.user.single()
+        driver_user_dto=mapper.to(UserDTO).map(driver_user)
+        driver_dto=mapper.to(DriverDTO).map(
+            driver,
+            fields_mapping={
+                "user_id":driver_user.uid,
+                "user":driver_user_dto
+            }
+        )
+
+        route_dto=mapper.to(RouteDTO).map(
+            route,
+            fields_mapping={
+                "client":client_dto,
+                "driver":driver_dto
+            }
+        )
+
+        route.delete()
 
         return route_dto

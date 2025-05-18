@@ -3,7 +3,8 @@ from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO
 from app.models.domain import Client,Vehicle,Rent,User
 from datetime import datetime
 import uuid
-from fastapi import HTTPException
+from fastapi import HTTPException,status
+from neomodel.exceptions import *
 from automapper import mapper
 
 class RentService:
@@ -57,16 +58,15 @@ class RentService:
 
         rid=str(uuid.uuid4())
 
-        # Calculate number of days between rent_date and end_date
+
         number_of_days = (request.end_date - request.rent_date).days
 
-        # Make sure it's at least 1 day (optional safety check)
+        
         number_of_days = max(number_of_days, 1)
 
-        # Calculate full price
         full_price = number_of_days * vehicle_dto.price
 
-        # Create and save Rent node
+      
         rent_node = Rent(
             rid=rid,
             rent_date=request.rent_date,
@@ -90,5 +90,42 @@ class RentService:
 "client":client_dto,
 "vehicle":vehicle_dto
         })
+
+        return rent_dto
+    
+    def delete_rent(self,rid:str)->RentDTO:
+        try:
+            rent:Rent=Rent.nodes.get(rid=rid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Rent with id '{rid}' not found",
+            )
+
+        client:Client=rent.client.single()
+        client_user:User=client.user.single()
+        client_user_dto=mapper.to(UserDTO).map(client_user)
+
+        client_dto=mapper.to(ClientDTO).map(
+            client,
+            fields_mapping={
+                "user_id":client_user.uid,
+                "user":client_user_dto
+            }
+        )
+
+        vehicle:Vehicle=rent.vehicle.single()
+
+        vehicle_dto=mapper.to(VehicleDTO).map(vehicle)
+
+        rent_dto=mapper.to(RentDTO).map(
+            rent,
+            fields_mapping={
+                "client":client_dto,
+                "vehicle":vehicle_dto
+            }
+        )
+
+        rent.delete()
 
         return rent_dto

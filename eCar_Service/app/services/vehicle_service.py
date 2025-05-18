@@ -4,8 +4,9 @@ from app.models.requests import RouteInsertRequest,VehicleInsertRequest
 from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO,ResultPage
 from datetime import datetime
 import uuid
-from fastapi import HTTPException
+from fastapi import HTTPException,status
 from automapper import mapper
+from neomodel.exceptions import *
 
 class VehicleService:
     def get_all_vehicles(self):
@@ -32,5 +33,19 @@ class VehicleService:
         ).save()
 
         vehicle_dto=mapper.to(VehicleDTO).map(vehicle_node)
+
+        return 
+    def delete_vehicle(self,vid:str)->VehicleDTO:
+        try:
+            vehicle:Vehicle=Vehicle.nodes.get(vid=vid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Vehicle with id '{vid}' not found",
+            )
+        vehicle_dto=mapper.to(VehicleDTO).map(
+            vehicle
+        )
+        vehicle.delete()
 
         return vehicle_dto

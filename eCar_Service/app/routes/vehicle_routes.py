@@ -15,3 +15,7 @@ def get_all(service: VehicleService = Depends(get_vehicle_service)):
 @router.post("/", response_model=VehicleDTO)
 def create_route(request: VehicleInsertRequest, service: VehicleService = Depends(get_vehicle_service)):
     return service.create_vehicle(request)
+
+@router.delete("/{vid}",response_model=VehicleDTO)
+def remove_vehicle(vid:str,service:VehicleService=Depends(get_vehicle_service)):
+    return service.delete_vehicle(vid)

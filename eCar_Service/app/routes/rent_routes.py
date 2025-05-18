@@ -15,3 +15,7 @@ def get_all(service:RentService=Depends(get_rent_service)):
 @router.post("/", response_model=RentDTO)
 def create_rent(request: RentInsertRequest, service: RentService = Depends(get_rent_service)):
     return service.create_rent(request)
+
+@router.delete("/{rid}",response_model=RentDTO)
+def remove_rent(rid:str,service:RentService=Depends(get_rent_service)):
+    return service.delete_rent(rid)
