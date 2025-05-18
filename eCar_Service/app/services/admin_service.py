@@ -7,8 +7,11 @@ from app import config
 from neomodel import db
 from automapper import mapper
 from typing import List
+from fastapi import HTTPException, status
 
+from neomodel.exceptions import DoesNotExist, MultipleNodesReturned
 class AdminService:
+    
     def get_all_admins(self) -> ResultPage[AdminDTO]:
         admins_dto: list[AdminDTO] = []
 
@@ -59,5 +62,32 @@ class AdminService:
             "user_id":user_node.uid,
             "user":user_dto
         })
+
+        return admin_dto
+    def delete_admin(self, aid: str) -> AdminDTO:
+   
+        try:
+            admin: Admin = Admin.nodes.get(aid=aid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Admin with id '{aid}' not found",
+            )
+     
+        user: User | None = admin.user.single()
+        user_dto = mapper.to(UserDTO).map(user) if user else None
+
+        admin_dto = mapper.to(AdminDTO).map(
+            admin,
+            fields_mapping={
+                "user_id": user.uid if user else None,
+                "user": user_dto,
+            },
+        )
+
+       
+        admin.delete()            
+        if user:
+            user.delete()         
 
         return admin_dto

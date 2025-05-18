@@ -6,6 +6,8 @@ from app.models.requests import UserInsertRequest
 from app import config
 from neomodel import db
 from automapper import mapper
+from fastapi import HTTPException,status
+from neomodel.exceptions import *
 
 class DriverService:
 
@@ -58,5 +60,32 @@ class DriverService:
             "user_id":user_node.uid,
             "user":user_dto
         })
+
+        return driver_dto
+    def delete_driver(self, did: str) -> DriverDTO:
+   
+        try:
+            driver: Driver = Driver.nodes.get(did=did)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Driver with id '{did}' not found",
+            )
+     
+        user: User | None = driver.user.single()
+        user_dto = mapper.to(UserDTO).map(user) if user else None
+
+        driver_dto = mapper.to(DriverDTO).map(
+            driver,
+            fields_mapping={
+                "user_id": user.uid if user else None,
+                "user": user_dto,
+            },
+        )
+
+       
+        driver.delete()            
+        if user:
+            user.delete()         
 
         return driver_dto

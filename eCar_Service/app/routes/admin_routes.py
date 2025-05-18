@@ -16,3 +16,7 @@ def get_all(service:AdminService=Depends(get_admin_service)):
 @router.post("/", response_model=AdminDTO)
 def create_client(request: UserInsertRequest, service: AdminService = Depends(get_admin_service)):
     return service.create_admin(request)
+
+@router.delete("/{aid}", response_model=AdminDTO)
+def remove_admin(aid: str, service: AdminService = Depends()):
+    return service.delete_admin(aid)

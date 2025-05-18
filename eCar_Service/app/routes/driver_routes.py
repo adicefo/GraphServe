@@ -15,3 +15,7 @@ def get_all_drivers(service:DriverService=Depends(get_driver_service)):
 @router.post("/", response_model=DriverDTO)
 def create_client(request: UserInsertRequest, service: DriverService = Depends(get_driver_service)):
     return service.create_driver(request)
+
+@router.delete("/{did}", response_model=DriverDTO)
+def remove_driver(did: str, service: DriverService = Depends(get_driver_service)):
+    return service.delete_driver(did)
