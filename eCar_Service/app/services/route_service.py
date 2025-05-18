@@ -7,9 +7,14 @@ import uuid
 from fastapi import HTTPException,status
 from automapper import mapper
 from neomodel.exceptions import *
-
+from math import *
+from app.utils.geo import  haversine_distance_m 
 
 class RouteService:
+             
+    
+  
+    
     def get_all_routes(self):
         routes_dto: list[RouteDTO] = []
 
@@ -74,6 +79,13 @@ class RouteService:
             "user": mapper.to(UserDTO).map(driver_user)
         })
 
+        #Calculates distance between lat and long
+        distance_meters=haversine_distance_m(
+            request.source_point_lat,request.source_point_lon,
+            request.destination_point_lat,request.destination_point_lon
+        )
+        distance_kilometers=round(distance_meters/1000,3)
+        full_price=distance_kilometers*3.07
         rid=str(uuid.uuid4())
 
         route_node = Route(
@@ -84,8 +96,8 @@ class RouteService:
             destination_point_lon=request.destination_point_lon,
             duration=0,
             paid=False,
-            number_of_kilometers=0.0,
-            full_price=0.0,
+            number_of_kilometers=distance_kilometers,
+            full_price=full_price,
             status="wait",
             ).save()
        
