@@ -137,6 +137,12 @@ class RouteService:
                 "driver":driver_dto
             }
         )
+          #first to delete all reviews that are connected to this vehicle...
+        cypher = """
+        MATCH (rr:Route {rid: $rid})<-[:REVIEWED_ROUTE]-(r:Review)
+        DETACH DELETE r
+        """
+        db.cypher_query(cypher, {"rid": rid})
 
         route.delete()
 

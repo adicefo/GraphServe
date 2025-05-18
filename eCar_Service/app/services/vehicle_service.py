@@ -34,7 +34,7 @@ class VehicleService:
 
         vehicle_dto=mapper.to(VehicleDTO).map(vehicle_node)
 
-        return 
+        return vehicle_dto
     def delete_vehicle(self,vid:str)->VehicleDTO:
         try:
             vehicle:Vehicle=Vehicle.nodes.get(vid=vid)
@@ -46,6 +46,14 @@ class VehicleService:
         vehicle_dto=mapper.to(VehicleDTO).map(
             vehicle
         )
+        #first to delete all rents that are connected to this vehicle...
+        cypher = """
+        MATCH (v:Vehicle {vid: $vid})<-[:RENTED_VEHICLE]-(r:Rent)
+        DETACH DELETE r
+        """
+        db.cypher_query(cypher, {"vid": vid})
+
+
         vehicle.delete()
 
         return vehicle_dto
