@@ -3,9 +3,9 @@ from app.models.responses import StatisticsDTO,DriverDTO,ResultPage,UserDTO
 from app.models.domain import Statistics,Driver
 from datetime import datetime
 import uuid
-from fastapi import HTTPException
+from fastapi import HTTPException,status
 from automapper import mapper
-
+from neomodel.exceptions import *
 class StatisticsService:
 
     def get_all_statistics(self):
@@ -62,3 +62,36 @@ class StatisticsService:
                                                         "driver":driver_dto
                                                     })
         return statistics_dto
+    
+    def delete_statistics(self,sid:str)->StatisticsDTO:
+        try:
+            statistics:Statistics=Statistics.nodes.get(sid=sid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Statistics with id '{sid}' not found",
+            )
+        
+        driver=statistics.driver.single()
+        driver_user=driver.user.single()
+        driver_user_dto=mapper.to(UserDTO).map(driver_user)
+
+        driver_dto=mapper.to(DriverDTO).map(
+            driver,
+            fields_mapping={
+                "user_id":driver_user.uid,
+                "user":driver_user_dto
+            }
+        )
+
+        statistics_dto=mapper.to(StatisticsDTO).map(
+            statistics,
+            fields_mapping={
+                "driver":driver_dto
+            }
+        )
+
+        statistics.delete()
+
+        return statistics_dto
+        

@@ -14,3 +14,6 @@ def get_all(serivce:StatisticsService=Depends(get_statistics_service)):
 @router.post(path="/",response_model=StatisticsDTO)
 def create_statistics(request:StatisticsInsertRequest,service:StatisticsService=Depends(get_statistics_service)):
     return service.create_statistics(request)
+@router.delete("/{sid}",response_model=StatisticsDTO)
+def remove_statistics(sid:str,service:StatisticsService=Depends(get_statistics_service)):
+    return service.delete_statistics(sid)

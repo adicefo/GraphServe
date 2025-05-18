@@ -3,8 +3,9 @@ from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO
 from app.models.domain import Client,Vehicle,Rent,User,Review,Driver,Route,Notification
 from datetime import datetime
 import uuid
-from fastapi import HTTPException
+from fastapi import HTTPException,status
 from automapper import mapper
+from neomodel.exceptions import *
 
 class NotificationService:
     def get_all_notifications(self):
@@ -35,7 +36,26 @@ class NotificationService:
          notification_dto = mapper.to(NotificationDTO).map(notification_node.__properties__)
 
          return notification_dto
-        
+    
+     
+    def delete_notification(self,nid:str)->NotificationDTO:
+          try:
+            notification:Notification=Notification.nodes.get(nid=nid)
+          except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Notification with id '{nid}' not found",
+            )
+         
+          notification_dto=mapper.to(NotificationDTO).map(
+              notification,
+          )
+
+          notification.delete()
+          return notification_dto
+         
+         
+         
        
 
         

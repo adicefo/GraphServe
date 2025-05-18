@@ -15,3 +15,7 @@ def get_all(service:ReviewService=Depends(get_review_service)):
 @router.post("/", response_model=ReviewDTO)
 def create_rent(request: ReviewInsertRequest, service: ReviewService = Depends(get_review_service)):
     return service.create_review(request)
+
+@router.delete("/{rid}",response_model=ReviewDTO)
+def remove_review(rid:str,service:ReviewService=Depends(get_review_service)):
+    return service.delete_review(rid)
