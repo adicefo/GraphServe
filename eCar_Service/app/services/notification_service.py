@@ -1,5 +1,5 @@
 from app.models.requests import RouteInsertRequest,VehicleInsertRequest,RentInsertRequest,ReviewInsertRequest,NotificationInsertRequest
-from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO,RentDTO,ReviewDTO,NotificationDTO
+from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO,RentDTO,ReviewDTO,NotificationDTO,ResultPage
 from app.models.domain import Client,Vehicle,Rent,User,Review,Driver,Route,Notification
 from datetime import datetime
 import uuid
@@ -13,7 +13,11 @@ class NotificationService:
          for n in Notification.nodes.all():
               notification_dto=mapper.to(NotificationDTO).map(n)
               notifications.append(notification_dto)
-         return notifications
+
+         response=ResultPage[NotificationDTO]
+         response.count=len(Notification.nodes)
+         response.result=notifications
+         return response
     
     def create_notification(self,request:NotificationInsertRequest):
          nid = str(uuid.uuid4())

@@ -1,7 +1,16 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
+from typing import Generic, TypeVar
 
+T=TypeVar("T")
+
+class ResultPage(BaseModel, Generic[T]):
+    result: list[T]                    
+    count: int                          
+
+    class Config:
+        orm_mode = True 
 class UserDTO(BaseModel):
     uid:str
     name: str

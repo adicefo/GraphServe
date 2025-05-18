@@ -1,5 +1,5 @@
 from app.models.requests import StatisticsInsertRequest
-from app.models.responses import StatisticsDTO,DriverDTO,UserDTO
+from app.models.responses import StatisticsDTO,DriverDTO,ResultPage,UserDTO
 from app.models.domain import Statistics,Driver
 from datetime import datetime
 import uuid
@@ -31,7 +31,10 @@ class StatisticsService:
                 }
             )
             statistics_dto.append(s_response)
-        return statistics_dto
+        response=ResultPage[StatisticsDTO]
+        response.count=len(Statistics.nodes)
+        response.result=statistics_dto
+        return response
 
     def create_statistics(self,request:StatisticsInsertRequest):
         driver = Driver.nodes.get_or_none(did=request.driver_id)

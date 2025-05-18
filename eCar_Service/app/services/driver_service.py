@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 from app.models.domain import Driver,User
-from app.models.responses import DriverDTO,UserDTO
+from app.models.responses import DriverDTO,UserDTO,ResultPage
 from app.models.requests import UserInsertRequest
 from app import config
 from neomodel import db
@@ -9,7 +9,7 @@ from automapper import mapper
 
 class DriverService:
 
-    def get_all_drivers(self)-> list[DriverDTO]:
+    def get_all_drivers(self)-> ResultPage[DriverDTO]:
         drivers_dto:list[DriverDTO]=[]
 
         for driver in Driver.nodes.all():
@@ -21,7 +21,10 @@ class DriverService:
                 fields_mapping={"user_id": user.uid, "user": user_dto},
             )
             drivers_dto.append(driver_dto)
-        return drivers_dto
+        response=ResultPage[DriverDTO]
+        response.result=drivers_dto
+        response.count=len(Driver.nodes)
+        return response
     
 
     def create_driver(self,request:UserInsertRequest):

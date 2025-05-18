@@ -1,5 +1,5 @@
 from app.models.requests import RouteInsertRequest,VehicleInsertRequest,RentInsertRequest,ReviewInsertRequest
-from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO,RentDTO,ReviewDTO
+from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO,RentDTO,ResultPage,ReviewDTO
 from app.models.domain import Client,Vehicle,Rent,User,Review,Driver,Route
 from datetime import datetime
 import uuid
@@ -64,7 +64,10 @@ class ReviewService:
                 }
             )
             reviews_dto.append(review_dto)
-        return reviews_dto
+        response=ResultPage[ReviewDTO]
+        response.count=len(Review.nodes)
+        response.result=reviews_dto
+        return response
     
 
     def create_review(self,request:ReviewInsertRequest):

@@ -1,5 +1,5 @@
 from app.models.requests import RouteInsertRequest,VehicleInsertRequest,RentInsertRequest
-from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO,RentDTO
+from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO,RentDTO,ResultPage
 from app.models.domain import Client,Vehicle,Rent,User
 from datetime import datetime
 import uuid
@@ -32,7 +32,10 @@ class RentService:
                 }
             )
             rents_dto.append(rent_dto)
-        return rents_dto
+        response=ResultPage[RentDTO]
+        response.count=len(Rent.nodes)
+        response.result=rents_dto
+        return response
     
 
     def create_rent(self,request:RentInsertRequest):

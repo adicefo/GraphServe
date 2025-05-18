@@ -1,7 +1,7 @@
 from neomodel import db
 from app.models.domain import Route, Client, Driver  
 from app.models.requests import RouteInsertRequest 
-from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO
+from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,ResultPage
 from datetime import datetime
 import uuid
 from fastapi import HTTPException
@@ -45,8 +45,10 @@ class RouteService:
                 },
             )
             routes_dto.append(route_dto)
-
-        return routes_dto
+        response=ResultPage[RouteDTO]
+        response.result=routes_dto
+        response.count=len(Route.nodes)
+        return response
 
         
     def create_route(self,request: RouteInsertRequest):

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.models.requests import NotificationInsertRequest
-from app.models.responses import NotificationDTO
+from app.models.responses import NotificationDTO,ResultPage
 from app.services.notification_service import NotificationService
 
 router=APIRouter(prefix="/notification", tags= ["notification"])
@@ -8,7 +8,7 @@ router=APIRouter(prefix="/notification", tags= ["notification"])
 def get_notification_service():
     return NotificationService()
 
-@router.get("/",response_model=list[NotificationDTO])
+@router.get("/",response_model=ResultPage[NotificationDTO])
 def get_all(service:NotificationService=Depends(get_notification_service)):
     return service.get_all_notifications()
 

@@ -8,7 +8,7 @@ router = APIRouter(prefix="/driver", tags=["driver"])
 def get_driver_service():
     return DriverService()
 
-@router.get("/",response_model=list[DriverDTO])
+@router.get("/",response_model=ResultPage[DriverDTO])
 def get_all_drivers(service:DriverService=Depends(get_driver_service)):
     return service.get_all_drivers()
 

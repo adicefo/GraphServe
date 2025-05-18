@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.models.requests import RouteInsertRequest
-from app.models.responses import RouteDTO
+from app.models.responses import RouteDTO,ResultPage
 from app.services.route_service import RouteService
 
 router = APIRouter(prefix="/route", tags=["route"])
@@ -8,7 +8,7 @@ router = APIRouter(prefix="/route", tags=["route"])
 def get_route_service():
     return RouteService()
 
-@router.get("/", response_model=list[RouteDTO])
+@router.get("/", response_model=ResultPage[RouteDTO])
 def get_all_routes( service: RouteService = Depends(get_route_service)):
     return service.get_all_routes()
 @router.post("/", response_model=RouteDTO)

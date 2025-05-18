@@ -1,7 +1,7 @@
 from neomodel import db
 from app.models.domain import Route, Client, Driver,Vehicle  
 from app.models.requests import RouteInsertRequest,VehicleInsertRequest
-from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO
+from app.models.responses import RouteDTO,ClientDTO,DriverDTO,UserDTO,VehicleDTO,ResultPage
 from datetime import datetime
 import uuid
 from fastapi import HTTPException
@@ -14,7 +14,10 @@ class VehicleService:
         for vehicle in Vehicle.nodes.all():
             vehicle_dto=mapper.to(VehicleDTO).map(vehicle)
             vehicles_dto.append(vehicle_dto)
-        return vehicles_dto
+        response=ResultPage[VehicleDTO]
+        response.result=vehicles_dto
+        response.count=len(Vehicle.nodes)
+        return response
     
     def create_vehicle(self,request:VehicleInsertRequest):
         vehicle_vid=str(uuid.uuid4())

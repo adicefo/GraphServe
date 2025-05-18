@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
 from app.models.domain import Admin,User
-from app.models.responses import AdminDTO,UserDTO
+from app.models.responses import AdminDTO,UserDTO,ResultPage
 from app.models.requests import UserInsertRequest
 from app import config
 from neomodel import db
@@ -9,7 +9,7 @@ from automapper import mapper
 from typing import List
 
 class AdminService:
-    def get_all_admins(self) -> list[AdminDTO]:
+    def get_all_admins(self) -> ResultPage[AdminDTO]:
         admins_dto: list[AdminDTO] = []
 
         for admin in Admin.nodes.all():          
@@ -21,8 +21,13 @@ class AdminService:
                 fields_mapping={"user_id": user.uid, "user": user_dto},
             )
             admins_dto.append(admin_dto)
+      
+        response=ResultPage[AdminDTO]
+        response.result=admins_dto
+        response.count=len(Admin.nodes)
 
-        return admins_dto
+        
+        return response
     def create_admin(self,request:UserInsertRequest):
         if request.password!=request.password_conifrm:
             raise ValueError("Password do not match")
