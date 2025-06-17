@@ -1,4 +1,4 @@
-# 🚗 eCar_FastAPI_Service
+#  GraphServe
 
 A backend service built with **FastAPI** and **Neo4j** graph database for modeling and managing relationships between entities in the eCar system.
 
