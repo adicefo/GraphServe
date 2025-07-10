@@ -10,7 +10,28 @@ from fastapi import HTTPException,status
 from neomodel.exceptions import *
 
 class ClientService:
-    def get_all_clients(self) -> ResultPage[ClientDTO]:
+ def get_client_by_id(self, cid: str) -> ClientDTO:
+    try:
+        client: Client = Client.nodes.get(cid=cid)
+    except (DoesNotExist, MultipleNodesReturned):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Client with id '{cid}' not found",
+        )
+
+    user: User | None = client.user.single()
+    user_dto = mapper.to(UserDTO).map(user) if user else None
+
+    client_dto = mapper.to(ClientDTO).map(
+        client,
+        fields_mapping={
+            "user_id": user.uid if user else None,
+            "user": user_dto,
+        },
+    )
+
+    return client_dto
+def get_all_clients(self) -> ResultPage[ClientDTO]:
         clients_dto: list[ClientDTO] = []
 
         for client in Client.nodes.all():          
@@ -26,7 +47,7 @@ class ClientService:
         response.result=clients_dto
         response.count=len(Client.nodes)
         return response
-    def create_client(self, request: UserInsertRequest):
+def create_client(self, request: UserInsertRequest):
         if request.password != request.password_conifrm:
             raise ValueError("Passwords do not match")
         user_uid = str(uuid.uuid4())
@@ -59,7 +80,7 @@ class ClientService:
         })
 
         return client_dto
-    def delete_client(self, cid: str) -> ClientDTO:
+def delete_client(self, cid: str) -> ClientDTO:
    
 
         try:

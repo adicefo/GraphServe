@@ -10,8 +10,28 @@ from fastapi import HTTPException,status
 from neomodel.exceptions import *
 
 class DriverService:
+ def get_driver_by_id(self, did: str) -> DriverDTO:
+    try:
+        driver: Driver = Driver.nodes.get(did=did)
+    except (DoesNotExist, MultipleNodesReturned):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Driver with id '{did}' not found",
+        )
 
-    def get_all_drivers(self)-> ResultPage[DriverDTO]:
+    user: User | None = driver.user.single()
+    user_dto = mapper.to(UserDTO).map(user) if user else None
+
+    driver_dto = mapper.to(DriverDTO).map(
+        driver,
+        fields_mapping={
+            "user_id": user.uid if user else None,
+            "user": user_dto,
+        },
+    )
+
+    return driver_dto
+ def get_all_drivers(self)-> ResultPage[DriverDTO]:
         drivers_dto:list[DriverDTO]=[]
 
         for driver in Driver.nodes.all():
@@ -29,7 +49,7 @@ class DriverService:
         return response
     
 
-    def create_driver(self,request:UserInsertRequest):
+ def create_driver(self,request:UserInsertRequest):
         if request.password!=request.password_conifrm:
             raise ValueError("Password do not match")
         user_uid = str(uuid.uuid4())
@@ -62,7 +82,7 @@ class DriverService:
         })
 
         return driver_dto
-    def delete_driver(self, did: str) -> DriverDTO:
+ def delete_driver(self, did: str) -> DriverDTO:
    
         try:
             driver: Driver = Driver.nodes.get(did=did)

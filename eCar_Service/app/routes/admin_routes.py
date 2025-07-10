@@ -9,6 +9,10 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 def get_admin_service():
     return AdminService()
 
+@router.get("/{aid}", response_model=AdminDTO)
+def get_admin_by_id(aid: str,service:AdminService=Depends(get_admin_service)):
+    return service.get_admin_by_id(aid)
+
 @router.get("/",response_model=ResultPage[AdminDTO])
 def get_all(service:AdminService=Depends(get_admin_service)):
     return service.get_all_admins()

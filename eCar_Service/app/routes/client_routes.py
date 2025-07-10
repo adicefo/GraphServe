@@ -7,7 +7,9 @@ router = APIRouter(prefix="/client", tags=["client"])
 
 def get_client_service():
     return ClientService()
-
+@router.get("/{cid}", response_model=ClientDTO)
+def get_client_by_id(cid: str,service:ClientService=Depends(get_client_service)):
+    return service.get_client_by_id(cid)
 @router.get("/",response_model=ResultPage[ClientDTO])
 def get_all_clients(service:ClientService=Depends(get_client_service)):
     return service.get_all_clients()
