@@ -7,7 +7,9 @@ router = APIRouter(prefix="/route", tags=["route"])
 
 def get_route_service():
     return RouteService()
-
+@router.get("/{rid}", response_model=RouteDTO)
+def get_route_by_id(rid: str,service:RouteService=Depends(get_route_service)):
+    return service.get_route_by_id(rid)
 @router.get("/", response_model=ResultPage[RouteDTO])
 def get_all_routes( service: RouteService = Depends(get_route_service)):
     return service.get_all_routes()

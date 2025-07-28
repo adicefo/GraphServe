@@ -11,11 +11,49 @@ from math import *
 from app.utils.geo import  haversine_distance_m 
 
 class RouteService:
-             
+     def get_route_by_id(self, rid: str) -> RouteDTO:
+        try:
+            route: Route = Route.nodes.get(rid=rid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Route with id '{rid}' not found",
+            )
+
+        client = route.client.single()
+        client_user = client.user.single()
+        client_user_dto = mapper.to(UserDTO).map(client_user)
+        client_dto = mapper.to(ClientDTO).map(
+            client,
+            fields_mapping={
+                "user_id": client_user.uid,
+                "user": client_user_dto
+            }
+        )
+
+        driver = route.driver.single()
+        driver_user = driver.user.single()
+        driver_user_dto = mapper.to(UserDTO).map(driver_user)
+        driver_dto = mapper.to(DriverDTO).map(
+            driver,
+            fields_mapping={
+                "user_id": driver_user.uid,
+                "user": driver_user_dto
+            }
+        )
+
+        route_dto = mapper.to(RouteDTO).map(
+            route,
+            fields_mapping={
+                "client": client_dto,
+                "driver": driver_dto
+            }
+        )
+
+        return route_dto         
     
   
-    
-    def get_all_routes(self):
+     def get_all_routes(self):
         routes_dto: list[RouteDTO] = []
 
         for route in Route.nodes.all():  
@@ -58,7 +96,7 @@ class RouteService:
         return response
 
         
-    def create_route(self,request: RouteInsertRequest):
+     def create_route(self,request: RouteInsertRequest):
         client = Client.nodes.get_or_none(cid=request.client_id)
         client_user = client.user.single()
         if not client_user:
@@ -111,7 +149,7 @@ class RouteService:
         })
 
         return route_dto
-    def delete_route(self,rid:str)->RouteDTO:
+     def delete_route(self,rid:str)->RouteDTO:
         
         try:
             route:Route=Route.nodes.get(rid=rid)
