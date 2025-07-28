@@ -7,7 +7,9 @@ router = APIRouter(prefix="/vehicle", tags=["vehicle"])
 
 def get_vehicle_service():
     return VehicleService()
-
+@router.get("/{vid}", response_model=VehicleDTO)
+def get_route_by_id(vid: str,service:VehicleService=Depends(get_vehicle_service)):
+    return service.get_vehicle_by_id(vid)
 @router.get("/", response_model=ResultPage[VehicleDTO])
 def get_all(service: VehicleService = Depends(get_vehicle_service)):
     return service.get_all_vehicles()

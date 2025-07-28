@@ -9,6 +9,21 @@ from automapper import mapper
 from neomodel.exceptions import *
 
 class VehicleService:
+    def get_vehicle_by_id(self, vid: str) -> VehicleDTO:
+        try:
+            vehicle: Vehicle = Vehicle.nodes.get(vid=vid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Vehicle with id '{vid}' not found",
+            )
+
+        
+
+        vehicle_dto = mapper.to(VehicleDTO).map(
+            vehicle)
+
+        return vehicle_dto 
     def get_all_vehicles(self):
         vehicles_dto:list[VehicleDTO]=[]
 

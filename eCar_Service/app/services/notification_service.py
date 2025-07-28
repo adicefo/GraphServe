@@ -8,6 +8,21 @@ from automapper import mapper
 from neomodel.exceptions import *
 
 class NotificationService:
+    def get_notification_by_id(self, nid: str) -> NotificationDTO:
+        try:
+            notification: Notification = Notification.nodes.get(nid=nid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Notification with id '{nid}' not found",
+            )
+
+        
+
+        notification_dto = mapper.to(NotificationDTO).map(
+            notification)
+
+        return notification_dto 
     def get_all_notifications(self):
          notifications:list[NotificationDTO]=[]
 
