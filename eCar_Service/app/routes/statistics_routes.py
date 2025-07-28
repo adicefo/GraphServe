@@ -7,7 +7,9 @@ router=APIRouter(prefix="/statistics",tags=["statistics"])
 
 def get_statistics_service():
     return StatisticsService()
-
+@router.get("/{sid}", response_model=StatisticsDTO)
+def get_route_by_id(sid: str,service:StatisticsService=Depends(get_statistics_service)):
+    return service.get_statistics_by_id(sid)
 @router.get("/",response_model=ResultPage[StatisticsDTO])
 def get_all(serivce:StatisticsService=Depends(get_statistics_service)):
     return serivce.get_all_statistics()

@@ -7,7 +7,9 @@ router = APIRouter(prefix="/review", tags=["review"])
 
 def get_review_service():
     return ReviewService()
-
+@router.get("/{rid}", response_model=ReviewDTO)
+def get_route_by_id(rid: str,service:ReviewService=Depends(get_review_service)):
+    return service.get_review_by_id(rid)
 @router.get("/",response_model=ResultPage[ReviewDTO])
 def get_all(service:ReviewService=Depends(get_review_service)):
     return service.get_all_reviews()

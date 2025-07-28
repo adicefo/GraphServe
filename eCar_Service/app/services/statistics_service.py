@@ -7,8 +7,36 @@ from fastapi import HTTPException,status
 from automapper import mapper
 from neomodel.exceptions import *
 class StatisticsService:
+     def get_statistics_by_id(self, sid: str) -> StatisticsDTO:
+        try:
+            statistics: Statistics = Statistics.nodes.get(sid=sid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Statistics with id '{sid}' not found",
+            )
 
-    def get_all_statistics(self):
+        driver=statistics.driver.single()
+        driver_user=driver.user.single()
+        driver_user_dto=mapper.to(UserDTO).map(driver_user)
+        driver_dto=mapper.to(DriverDTO).map(
+                driver,
+                fields_mapping={
+                    "user_id":driver_user.uid,
+                    "user":driver_user_dto
+                }
+            )
+
+        s_dto = mapper.to(StatisticsDTO).map(
+            statistics,
+            fields_mapping={
+                
+                "driver": driver_dto
+            }
+        )
+
+        return s_dto  
+     def get_all_statistics(self):
         statistics_dto:list[StatisticsDTO]=[]
 
         for statistics in Statistics.nodes.all():
@@ -36,7 +64,7 @@ class StatisticsService:
         response.result=statistics_dto
         return response
 
-    def create_statistics(self,request:StatisticsInsertRequest):
+     def create_statistics(self,request:StatisticsInsertRequest):
         driver = Driver.nodes.get_or_none(did=request.driver_id)
         driver_user = driver.user.single()
         if not driver_user:
@@ -63,7 +91,7 @@ class StatisticsService:
                                                     })
         return statistics_dto
     
-    def delete_statistics(self,sid:str)->StatisticsDTO:
+     def delete_statistics(self,sid:str)->StatisticsDTO:
         try:
             statistics:Statistics=Statistics.nodes.get(sid=sid)
         except (DoesNotExist, MultipleNodesReturned):
