@@ -10,6 +10,9 @@ from typing import List
 from fastapi import HTTPException, status
 
 from neomodel.exceptions import DoesNotExist, MultipleNodesReturned
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class AdminService:
    def get_admin_by_id(self, aid: str) -> AdminDTO:
     try:
@@ -53,39 +56,44 @@ class AdminService:
 
         
         return response
-   def create_admin(self,request:UserInsertRequest):
-        if request.password!=request.password_conifrm:
-            raise ValueError("Password do not match")
-        user_uid = str(uuid.uuid4())
-        user_node = User(
-            uid=user_uid,
-            name=request.name,
-            surname=request.surname,
-            username=request.username,
-            email=request.email,
-            password=request.password,
-            password_confirm=request.password_conifrm,
-            telephone_number=request.telephone_number,
-            gender=request.gender,
-            active=request.active,
-            registration_date=datetime.now()
-        ).save()
-        
-        admin_uid=str(uuid.uuid4())
-        admin_node = Admin(
-            aid=admin_uid
-        ).save()
+   def create_admin(self, request: UserInsertRequest):
+    if request.password != request.password_conifrm:
+        raise ValueError("Passwords do not match")
 
-        admin_node.user.connect(user_node)
+    hashed_password = pwd_context.hash(request.password)
 
-        user_dto = mapper.to(UserDTO).map(user_node)
+    user_uid = str(uuid.uuid4())
+    user_node = User(
+        uid=user_uid,
+        name=request.name,
+        surname=request.surname,
+        username=request.username,
+        email=request.email,
+        password=hashed_password,  
+        telephone_number=request.telephone_number,
+        gender=request.gender,
+        active=request.active,
+        registration_date=datetime.now()
+    ).save()
 
-        admin_dto = mapper.to(AdminDTO).map(admin_node,fields_mapping={
-            "user_id":user_node.uid,
-            "user":user_dto
-        })
+    admin_uid = str(uuid.uuid4())
+    admin_node = Admin(
+        aid=admin_uid
+    ).save()
 
-        return admin_dto
+    admin_node.user.connect(user_node)
+
+    user_dto = mapper.to(UserDTO).map(user_node)
+    admin_dto = mapper.to(AdminDTO).map(
+        admin_node,
+        fields_mapping={
+            "user_id": user_node.uid,
+            "user": user_dto
+        },
+    )
+
+    return admin_dto
+
    def delete_admin(self, aid: str) -> AdminDTO:
    
         try:

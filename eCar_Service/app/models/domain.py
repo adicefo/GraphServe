@@ -12,7 +12,6 @@ class User(StructuredNode):
     email = EmailProperty()
     username = StringProperty()
     password=StringProperty()
-    password_confirm=StringProperty()
     telephone_number = StringProperty()
     gender = StringProperty()
     registration_date = DateTimeProperty(default_now=True)

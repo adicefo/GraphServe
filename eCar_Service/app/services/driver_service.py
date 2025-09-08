@@ -8,7 +8,9 @@ from neomodel import db
 from automapper import mapper
 from fastapi import HTTPException,status
 from neomodel.exceptions import *
+from passlib.context import CryptContext
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class DriverService:
  def get_driver_by_id(self, did: str) -> DriverDTO:
     try:
@@ -52,6 +54,8 @@ class DriverService:
  def create_driver(self,request:UserInsertRequest):
         if request.password!=request.password_conifrm:
             raise ValueError("Password do not match")
+        hashed_password = pwd_context.hash(request.password)
+        
         user_uid = str(uuid.uuid4())
         user_node = User(
             uid=user_uid,
@@ -59,8 +63,7 @@ class DriverService:
             surname=request.surname,
             username=request.username,
             email=request.email,
-            password=request.password,
-            password_confirm=request.password_conifrm,
+            password=hashed_password,
             telephone_number=request.telephone_number,
             gender=request.gender,
             active=request.active,
