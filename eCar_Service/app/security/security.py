@@ -1,16 +1,22 @@
 # app/security.py
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from app.models.user import User  # your Neo4j User model
-import secrets
+from app.models.domain import User  # Neo4j User model
+from passlib.context import CryptContext
 
 security = HTTPBasic()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+
+    return pwd_context.verify(plain_password, hashed_password)
 
 def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
-    """
-    Validates username & password using Neo4j User model.
-    """
-    # Fetch user from Neo4j (assuming you have User with username + password fields)
+
     try:
         user = User.nodes.get(username=credentials.username)
     except User.DoesNotExist:
@@ -20,8 +26,7 @@ def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
             headers={"WWW-Authenticate": "Basic"},
         )
 
-    # Compare passwords safely
-    if not secrets.compare_digest(user.password, credentials.password):
+    if not verify_password(credentials.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
