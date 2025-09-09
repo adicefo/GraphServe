@@ -1,0 +1,89 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height:100vh;
+  background-color: #f3f4f6;
+}
+
+.login-card {
+  width: 350px;
+  padding: 50px;
+  height: 350px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.logo-circle {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px auto;
+  background-color: #ffeb3b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-circle img {
+  width: 50px;
+  height: 50px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #000;
+}
+
+input {
+  width: 90%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+}
+
+
+
+.password-wrapper input {
+  flex: 1;
+}
+
+.eye-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: -40px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #ffeb3b;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 16px;
+}
+
+.login-btn:hover {
+  background-color: #fdd835;
+}
+
+.footer {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+}
