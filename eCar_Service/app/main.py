@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends
 from app.security.security import authenticate
-from app.routes import client_routes,admin_routes,driver_routes,route_routes,vehicle_routes,rent_routes,review_routes,notification_routes,statistics_routes
+from app.routes import client_routes,admin_routes,driver_routes,route_routes,vehicle_routes,rent_routes,review_routes,notification_routes,statistics_routes,auth_routes
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(dependencies=[Depends(authenticate)])
 
 @app.get("/")
@@ -37,3 +38,10 @@ def custom_openapi():
     return app.openapi_schema
 
 app.openapi = custom_openapi
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],  # Angular dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
