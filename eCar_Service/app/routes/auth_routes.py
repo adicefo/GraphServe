@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.security import authenticate
+from app.security.security import authenticate
 from app.models.responses import UserDTO
 
 router = APIRouter(prefix="/auth", tags=["auth"])

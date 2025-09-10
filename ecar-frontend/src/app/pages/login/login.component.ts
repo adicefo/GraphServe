@@ -32,15 +32,18 @@ export class LoginComponent {
     localStorage.setItem('username', this.username);
     localStorage.setItem('password', this.password);
 
-    /*this.http.get('http://localhost:8000/api/secure-endpoint').subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
-      },
-      error: () => {
-        alert('Invalid login credentials.');
-        localStorage.removeItem('username');
-        localStorage.removeItem('password');
-      }
-    });*/
-  }
+    this.http.post('http://localhost:8000/auth/login', {})
+      .subscribe({
+        next: (response: any) => {
+          console.log("Login successful:", response);
+        },
+        error: (err) => {
+          console.error("Login error:", err);
+          alert('Invalid login credentials.');
+          localStorage.removeItem('username');
+          localStorage.removeItem('password');
+        }
+      });
+}
+  
 }

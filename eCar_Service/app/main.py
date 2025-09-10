@@ -3,6 +3,7 @@ from app.security.security import authenticate
 from app.routes import client_routes,admin_routes,driver_routes,route_routes,vehicle_routes,rent_routes,review_routes,notification_routes,statistics_routes,auth_routes
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(dependencies=[Depends(authenticate)])
 
 @app.get("/")
@@ -18,6 +19,7 @@ app.include_router(rent_routes.router)
 app.include_router(review_routes.router)
 app.include_router(notification_routes.router)
 app.include_router(statistics_routes.router)
+app.include_router(auth_routes.router)
 
 def custom_openapi():
     if app.openapi_schema:
@@ -40,7 +42,7 @@ def custom_openapi():
 app.openapi = custom_openapi
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],  # Angular dev server
+    allow_origins=["http://localhost:4200"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
