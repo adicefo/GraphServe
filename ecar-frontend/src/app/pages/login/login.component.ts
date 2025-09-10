@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ export class LoginComponent {
   password: string = '';
   isObscured: boolean = true;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router,private authService:AuthService) {}
 
   toggleVisibility() {
     this.isObscured = !this.isObscured;
@@ -32,10 +33,11 @@ export class LoginComponent {
     localStorage.setItem('username', this.username);
     localStorage.setItem('password', this.password);
 
-    this.http.post('http://localhost:8000/auth/login', {})
+    this.authService.login(this.username,this.password)
       .subscribe({
         next: (response: any) => {
           console.log("Login successful:", response);
+          this.router.navigate(['dashboard']);
         },
         error: (err) => {
           console.error("Login error:", err);

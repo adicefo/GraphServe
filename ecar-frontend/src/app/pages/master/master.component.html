@@ -1,0 +1,38 @@
+<div class="master-container">
+  <!-- Main Header -->
+  <header class="header">
+    <h1 class="app-title">
+      eCar <span class="highlight">Intuitive Management</span>
+    </h1>
+  </header>
+
+  <!-- Sub Header -->
+  <div class="sub-header">
+    <div class="welcome-box">
+      <h3 class="welcome-text">👋 Welcome, <span>{{ username }}</span></h3>
+      <p class="section-text">
+        Current section: <span class="highlight">{{ currentRoute }}</span>
+      </p>
+    </div>
+
+    <div class="status-box">
+    
+      <span class="date-time">{{ currentDateTime }}</span>
+
+      <button class="info-btn" (click)="toggleInfo()" title="App Info">ℹ️</button>
+    </div>
+  </div>
+
+  <!-- Info Modal -->
+  <div class="modal" *ngIf="showInfo">
+    <div class="modal-content">
+      <h3>ℹ️ Application Info</h3>
+      <p>
+        This application is used to manage functions and entities of the
+        <strong>eCar platform</strong>.  
+        Admins can perform CRUD operations and review business reports.
+      </p>
+      <button class="close-btn" (click)="toggleInfo()">Close</button>
+    </div>
+  </div>
+</div>
