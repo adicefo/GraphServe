@@ -1,0 +1,12 @@
+<div class="dashboard-container">
+  <!-- Header -->
+ 
+<app-master currentRoute="Dashboard"></app-master>
+
+<div class="dashboard-grid">
+    <div class="dashboard-card" *ngFor="let entity of entities" (click)="navigate(entity.route)">
+      <div class="icon">{{ entity.icon }}</div>
+      <h3>{{ entity.name }}</h3>
+    </div>
+  </div>
+</div>
