@@ -7,7 +7,7 @@
   position: relative;
 }
 
-/* Star Dashboard Layout */
+
 .star-dashboard {
   position: relative;
   width: 100%;
@@ -16,27 +16,11 @@
   align-items: center;
   justify-content: center;
   margin-top: 40px;
+  margin-left: 120px;
 
 }
 
-/* Central Hub */
-.central-hub {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background: linear-gradient(135deg, #FFD700, #FFA500);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 0 40px rgba(255, 215, 0, 0.8),
-    0 0 80px rgba(255, 215, 0, 0.4);
-  z-index: 10;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  animation: pulse 3s infinite;
-}
+
 
 .central-hub:hover {
   transform: scale(1.1);
@@ -78,14 +62,14 @@
   animation: pulseRing 2s infinite;
 }
 
-/* Star Layout Container */
+
 .star-layout {
   position: relative;
   width: 600px;
   height: 600px;
 }
 
-/* Entity Containers positioned around the star */
+
 .entity-container {
   position: absolute;
   top: 50%;
@@ -98,7 +82,7 @@
   z-index: 5;
 }
 
-/* Ray Lines extending from center */
+
 .ray-line {
   position: absolute;
   top: 1px;
@@ -113,7 +97,7 @@
   pointer-events: none;
 }
 
-/* Ray Labels */
+
 .ray-label {
   position: absolute;
   top: -20px;
@@ -152,7 +136,7 @@
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
 }
 
-/* Entity Cards at ray ends */
+
 .entity-card {
   position: absolute;
   top: -60px;
