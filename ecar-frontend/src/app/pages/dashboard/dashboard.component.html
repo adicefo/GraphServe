@@ -2,29 +2,36 @@
   <app-master currentRoute="Dashboard"></app-master>
 
   <div class="star-dashboard">
-    <!-- Central Hub -->
-    <div class="central-hub">
-      <div class="hub-content">
-        <div class="hub-icon">🚗</div>
-        <h2>eCar Hub</h2>
-        <p>Management Center</p>
-      </div>
-      <div class="pulse-ring"></div>
-    </div>
+  
 
     <!-- Star Rays and Entities -->
     <div class="star-layout">
       <div class="entity-container" *ngFor="let entity of entities; let i = index" [style.--angle]="i * 45 + 'deg'"
-        (click)="navigate(entity.route)">
+        (click)="navigate(entity.route)" [attr.data-tooltip]="entity.name + ' - ' + entity.description">
 
         <!-- Ray Line -->
-        <div class="ray-line"></div>
+        <div class="ray-line">
+          <!-- Ray Label -->
+          <div class="ray-label">
+            <span class="ray-text">{{ entity.name }}</span>
+          </div>
+        </div>
 
         <!-- Entity Card at Ray End -->
-        <div class="entity-card">
+        <div class="entity-card" [title]="entity.name + ' - Click to manage ' + entity.name.toLowerCase()">
           <div class="entity-icon">{{ entity.icon }}</div>
           <h3 class="entity-name">{{ entity.name }}</h3>
+          <p class="entity-description">{{ entity.shortDesc }}</p>
           <div class="entity-glow"></div>
+
+          <!-- Tooltip -->
+          <div class="tooltip">
+            <div class="tooltip-content">
+              <strong>{{ entity.name }}</strong>
+              <p>{{ entity.description }}</p>
+              <small>Click to navigate</small>
+            </div>
+          </div>
         </div>
       </div>
     </div>
