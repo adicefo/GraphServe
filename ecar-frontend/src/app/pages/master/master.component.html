@@ -20,7 +20,12 @@
       <span class="date-time">{{ currentDateTime }}</span>
 
       <button class="info-btn" (click)="toggleInfo()" title="App Info">ℹ️</button>
+      <div class="logout-btn">
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
     </div>
+
+   
   </div>
 
   <!-- Info Modal -->
@@ -34,5 +39,7 @@
       </p>
       <button class="close-btn" (click)="toggleInfo()">Close</button>
     </div>
+    
   </div>
+ 
 </div>

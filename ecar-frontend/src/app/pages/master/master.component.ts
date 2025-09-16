@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-master',
@@ -14,6 +15,8 @@ export class MasterComponent {
   currentDateTime: string ="";
 
   showInfo: boolean = false;
+
+  constructor(private router: Router) {}
   ngOnInit() {
     this.username = localStorage.getItem('username') || 'User';
 
@@ -31,5 +34,11 @@ export class MasterComponent {
 
   toggleInfo() {
     this.showInfo = !this.showInfo;
+  }
+
+  logout() {
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
+    this.router.navigate(['']);
   }
 }
