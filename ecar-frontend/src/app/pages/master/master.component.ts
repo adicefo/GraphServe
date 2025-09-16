@@ -41,4 +41,7 @@ export class MasterComponent {
     localStorage.removeItem('password');
     this.router.navigate(['']);
   }
+  navigateToDashboard(){
+    this.router.navigate(['dashboard']);
+  }
 }

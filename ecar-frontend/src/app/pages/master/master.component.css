@@ -138,3 +138,7 @@
   font-weight: 500;
   transition: all 0.2s;
 }
+.dashboard-btn{
+  background: #ffd700;
+  border: none;
+}

@@ -16,6 +16,11 @@
     </div>
 
     <div class="status-box">
+      <button class="dashboard-btn" (click)="navigateToDashboard()" title="Go to Dashboard" *ngIf="currentRoute !== 'Dashboard'">
+        <span class="material-icons">dashboard</span>
+      </button>
+      
+      
     
       <span class="date-time">{{ currentDateTime }}</span>
 
