@@ -1,4 +1,163 @@
 <div class="driver-container">
     <app-master currentRoute="Drivers"></app-master>
-    
+
+    <div class="content-container">
+        <div class="header">
+            <h1>Driver Management</h1>
+            <div class="view-controls">
+                <button class="btn-view" [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+                    <i class="bi bi-grid"></i> Grid
+                </button>
+                <button class="btn-view" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
+                    <i class="bi bi-list-ul"></i> List
+                </button>
+            </div>
+        </div>
+
+        <div class="filters-container">
+            <div class="search-box">
+                <div class="input-group">
+                    <span class="input-icon"><i class="bi bi-search"></i></span>
+                    <input type="text" [formControl]="nameFilter" placeholder="Filter by name..." class="form-control">
+                </div>
+                <div class="input-group">
+                    <span class="input-icon"><i class="bi bi-search"></i></span>
+                    <input type="text" [formControl]="surnameFilter" placeholder="Filter by surname..."
+                        class="form-control">
+                </div>
+                <button class="btn-clear" (click)="clearFilters()" *ngIf="nameFilter.value || surnameFilter.value">
+                    Clear Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading and error states -->
+        <div class="status-container">
+            <div class="loading" *ngIf="isLoading">
+                <div class="spinner"></div>
+                <p>Loading drivers...</p>
+            </div>
+
+            <div class="error" *ngIf="error">
+                <i class="bi bi-exclamation-triangle"></i>
+                <p>{{ error }}</p>
+                <button class="btn-retry" (click)="loadDrivers()">Retry</button>
+            </div>
+
+            <div class="no-results" *ngIf="!isLoading && !error && filteredDrivers.length === 0">
+                <i class="bi bi-search"></i>
+                <p>No drivers match your filters</p>
+                <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+            </div>
+        </div>
+
+        <!-- Grid view -->
+        <div class="drivers-grid" *ngIf="viewMode === 'grid' && filteredDrivers.length > 0">
+            <div class="driver-card" *ngFor="let driver of filteredDrivers" (click)="selectDriver(driver)">
+                <div class="driver-avatar">
+                    <div class="avatar-placeholder">
+                        {{ driver.user?.name?.charAt(0) }}{{ driver.user?.surname?.charAt(0) }}
+                    </div>
+                </div>
+                <div class="driver-info">
+                    <h3>{{ driver.user?.name }} {{ driver.user?.surname }}</h3>
+                    <div class="driver-stats">
+                        <div class="stat">
+                            <i class="bi bi-people"></i>
+                            <span>{{ driver.number_of_clients_amount || 0 }} clients</span>
+                        </div>
+                        <div class="stat">
+                            <i class="bi bi-clock"></i>
+                            <span>{{ driver.number_of_hours_amount || 0 }} hours</span>
+                        </div>
+                    </div>
+                    <div class="driver-contact" *ngIf="driver.user?.telephone_number">
+                        <i class="bi bi-telephone"></i>
+                        <span>{{ driver.user?.telephone_number }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- List view -->
+        <div class="drivers-list" *ngIf="viewMode === 'list' && filteredDrivers.length > 0">
+            <div class="list-header">
+                <div class="col name">Name</div>
+                <div class="col clients">Clients</div>
+                <div class="col hours">Hours</div>
+                <div class="col contact">Contact</div>
+                <div class="col actions">Actions</div>
+            </div>
+            <div class="list-item" *ngFor="let driver of filteredDrivers">
+                <div class="col name">
+                    <div class="avatar-small">
+                        {{ driver.user?.name?.charAt(0) }}{{ driver.user?.surname?.charAt(0) }}
+                    </div>
+                    {{ driver.user?.name }} {{ driver.user?.surname }}
+                </div>
+                <div class="col clients">{{ driver.number_of_clients_amount || 0 }}</div>
+                <div class="col hours">{{ driver.number_of_hours_amount || 0 }}</div>
+                <div class="col contact">{{ driver.user?.telephone_number || 'N/A' }}</div>
+                <div class="col actions">
+                    <button class="btn-action" (click)="selectDriver(driver); $event.stopPropagation()">
+                        <i class="bi bi-info-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Driver details modal -->
+        <div class="modal" *ngIf="selectedDriver" (click)="closeDriverDetails()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h2>Driver Details</h2>
+                    <button class="btn-close" (click)="closeDriverDetails()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-avatar">
+                        <div class="avatar-large">
+                            {{ selectedDriver.user?.name?.charAt(0) }}{{ selectedDriver.user?.surname?.charAt(0) }}
+                        </div>
+                    </div>
+                    <div class="detail-info">
+                        <h3>{{ selectedDriver.user?.name }} {{ selectedDriver.user?.surname }}</h3>
+                        <div class="info-row">
+                            <span class="label">Email:</span>
+                            <span class="value">{{ selectedDriver.user?.email || 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Phone:</span>
+                            <span class="value">{{ selectedDriver.user?.telephone_number || 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Username:</span>
+                            <span class="value">{{ selectedDriver.user?.username || 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Gender:</span>
+                            <span class="value">{{ selectedDriver.user?.gender || 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Registered:</span>
+                            <span class="value">{{ selectedDriver.user?.registration_date ?
+                                (selectedDriver.user?.registration_date | date:'mediumDate') : 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-stats">
+                        <div class="stat-box">
+                            <div class="stat-value">{{ selectedDriver.number_of_clients_amount || 0 }}</div>
+                            <div class="stat-label">Total Clients</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value">{{ selectedDriver.number_of_hours_amount || 0 }}</div>
+                            <div class="stat-label">Total Hours</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" (click)="closeDriverDetails()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

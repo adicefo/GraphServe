@@ -2,6 +2,7 @@ import { Injectable, Inject, InjectionToken } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BaseServiceConfig } from '../models/base.model';
+import { SearchResult } from '../models/search_result';
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 export const SERVICE_CONFIG = new InjectionToken<BaseServiceConfig>('SERVICE_CONFIG');
@@ -35,12 +36,12 @@ export class BaseService<T> {
      * @param params - Query parameters
      * @returns Observable of API response
      */
-    getAll(params: any = {}): Observable<T[]> {
+    getAll(params: any = {}): Observable<SearchResult<T>> {
         // Filter out any null, undefined, or empty string values
         const filteredParams = this.filterParams(params);
         const url = `${this.baseUrl}/${this.endpoint}${this.customEndpoints.getAll}`;
 
-        return this.http.get<T[]>(url, { params: filteredParams });
+        return this.http.get<SearchResult<T>>(url, { params: filteredParams });
     }
 
     /**

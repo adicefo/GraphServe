@@ -141,4 +141,5 @@
 .dashboard-btn{
   background: #ffd700;
   border: none;
+  cursor: pointer;
 }
