@@ -40,6 +40,8 @@ export class BaseService<T> {
         // Filter out any null, undefined, or empty string values
         const filteredParams = this.filterParams(params);
         const url = `${this.baseUrl}/${this.endpoint}${this.customEndpoints.getAll}`;
+        console.log(url);
+        console.log(filteredParams);
 
         return this.http.get<SearchResult<T>>(url, { params: filteredParams });
     }

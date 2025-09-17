@@ -28,6 +28,8 @@ export class DriverComponent implements OnInit {
   surnameFilter = new FormControl('');
 
   selectedDriver: Driver | null = null;
+  driverToDelete: Driver | null = null;
+  showDeleteConfirmation = false;
   viewMode: 'grid' | 'list' = 'grid';
 
   constructor(private driverService: DriverService) { }
@@ -55,7 +57,6 @@ export class DriverComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-   
     this.driverService.getAll().subscribe({
       next: (data: SearchResult<Driver>) => {
         this.drivers = data;
@@ -95,6 +96,34 @@ export class DriverComponent implements OnInit {
 
   selectDriver(driver: Driver): void {
     this.selectedDriver = driver;
+  }
+
+  confirmDelete(driver: Driver, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.driverToDelete = driver;
+    this.showDeleteConfirmation = true;
+  }
+
+  cancelDelete(): void {
+    this.driverToDelete = null;
+    this.showDeleteConfirmation = false;
+  }
+
+  deleteDriver(): void {
+    if (!this.driverToDelete) return;
+
+    this.driverService.delete(this.driverToDelete.did!).subscribe({
+      next: () => {
+        this.loadDrivers();
+        this.showDeleteConfirmation = false;
+        this.driverToDelete = null;
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
   }
 
   closeDriverDetails(): void {
