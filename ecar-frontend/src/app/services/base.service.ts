@@ -10,10 +10,10 @@ export const SERVICE_CONFIG = new InjectionToken<BaseServiceConfig>('SERVICE_CON
 export class BaseService<T> {
     protected endpoint: string;
     protected customEndpoints = {
-        getAll: '/get',
+        getAll: '',
         getById: '/{id}',
-        create: '/save',
-        delete: '/delete/{id}'
+        create: '',
+        delete: '/{id}'
     };
 
     constructor(
