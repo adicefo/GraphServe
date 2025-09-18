@@ -11,6 +11,9 @@
                 <button class="btn-view" [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
                     <i class="bi bi-list-ul"></i> List
                 </button>
+                <button class="btn-view" (click)="addDriver()">
+                    <i class="bi bi-list-ul"></i> Add Driver
+                </button>
             </div>
         </div>
 
@@ -110,11 +113,11 @@
         </div>
 
         <!-- Driver details modal -->
-        <div class="modal" *ngIf="selectedDriver" (click)="closeDriverDetails()">
+        <div class="modal" *ngIf="selectedDriver" (click)="closeDriverModal()">
             <div class="modal-content" (click)="$event.stopPropagation()">
                 <div class="modal-header">
                     <h2>Driver Details</h2>
-                    <button class="btn-close" (click)="closeDriverDetails()">×</button>
+                    <button class="btn-close" (click)="closeDriverModal()">×</button>
                 </div>
                 <div class="modal-body">
                     <div class="detail-avatar">
@@ -158,7 +161,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-secondary" (click)="closeDriverDetails()">Close</button>
+                    <button class="btn-secondary" (click)="closeDriverModal()">Close</button>
                 </div>
             </div>
         </div>
@@ -183,6 +186,136 @@
                 <div class="modal-footer">
                     <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
                     <button class="btn-danger" (click)="deleteDriver()">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add driver modal -->
+        <div class="modal" *ngIf="addDriverModal" (click)="closeDriverModal()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h4>Add New Driver</h4>
+                    <button class="btn-close" (click)="closeDriverModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="driverForm" (ngSubmit)="saveDriver()">
+                        <div class="form-field">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" formControlName="name" />
+                            <div class="error-message"
+                                *ngIf="driverForm.get('name')?.invalid && (driverForm.get('name')?.dirty || driverForm.get('name')?.touched || formSubmitted)">
+                                <span *ngIf="driverForm.get('name')?.errors?.['required']">Name is required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['name']">{{ formErrors['name'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="surname">Surname:</label>
+                            <input type="text" id="surname" formControlName="surname" />
+                            <div class="error-message"
+                                *ngIf="driverForm.get('surname')?.invalid && (driverForm.get('surname')?.dirty || driverForm.get('surname')?.touched || formSubmitted)">
+                                <span *ngIf="driverForm.get('surname')?.errors?.['required']">Surname is required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['surname']">{{ formErrors['surname'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" formControlName="username" />
+                            <div class="error-message"
+                                *ngIf="driverForm.get('username')?.invalid && (driverForm.get('username')?.dirty || driverForm.get('username')?.touched || formSubmitted)">
+                                <span *ngIf="driverForm.get('username')?.errors?.['required']">Username is
+                                    required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['username']">{{ formErrors['username'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" formControlName="email" />
+                            <div class="error-message"
+                                *ngIf="driverForm.get('email')?.invalid && (driverForm.get('email')?.dirty || driverForm.get('email')?.touched || formSubmitted)">
+                                <span *ngIf="driverForm.get('email')?.errors?.['required']">Email is required</span>
+                                <span *ngIf="driverForm.get('email')?.errors?.['email']">Please enter a valid
+                                    email</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['email']">{{ formErrors['email'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" formControlName="password" />
+                            <div class="error-message"
+                                *ngIf="driverForm.get('password')?.invalid && (driverForm.get('password')?.dirty || driverForm.get('password')?.touched || formSubmitted)">
+                                <span *ngIf="driverForm.get('password')?.errors?.['required']">Password is
+                                    required</span>
+                                <span *ngIf="driverForm.get('password')?.errors?.['minlength']">Password must be at
+                                    least 6 characters</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['password']">{{ formErrors['password'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="password_confirm">Confirm Password:</label>
+                            <input type="password" id="password_confirm" formControlName="password_confirm" />
+                            <div class="error-message"
+                                *ngIf="driverForm.get('password_confirm')?.invalid && (driverForm.get('password_confirm')?.dirty || driverForm.get('password_confirm')?.touched || formSubmitted)">
+                                <span *ngIf="driverForm.get('password_confirm')?.errors?.['required']">Please confirm
+                                    your password</span>
+                            </div>
+                            <div class="error-message"
+                                *ngIf="driverForm.errors?.['passwordMismatch'] && (driverForm.get('password_confirm')?.dirty || driverForm.get('password_confirm')?.touched || formSubmitted)">
+                                Passwords don't match
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['password_confirm']">{{
+                                formErrors['password_confirm'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="telephone_number">Phone:</label>
+                            <input type="text" id="telephone_number" formControlName="telephone_number" />
+                            <div class="error-message"
+                                *ngIf="driverForm.get('telephone_number')?.invalid && (driverForm.get('telephone_number')?.dirty || driverForm.get('telephone_number')?.touched || formSubmitted)">
+                                <span *ngIf="driverForm.get('telephone_number')?.errors?.['required']">Phone number is
+                                    required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['telephone_number']">{{
+                                formErrors['telephone_number'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" formControlName="gender">
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            <div class="error-message"
+                                *ngIf="driverForm.get('gender')?.invalid && (driverForm.get('gender')?.dirty || driverForm.get('gender')?.touched || formSubmitted)">
+                                <span *ngIf="driverForm.get('gender')?.errors?.['required']">Gender is required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['gender']">{{ formErrors['gender'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="active">Active:</label>
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" id="active" formControlName="active" />
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['active']">{{ formErrors['active'] }}</div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-cancel" (click)="closeDriverModal()">
+                                <i class="bi bi-arrow-left"></i>
+                                Close
+                            </button>
+                            <button type="submit" class="btn-save">
+                                <i class="bi bi-save"></i>
+                                Save
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
