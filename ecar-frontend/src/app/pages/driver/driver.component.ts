@@ -42,7 +42,7 @@ export class DriverComponent implements OnInit {
     this.driverForm = new FormGroup({
       name: new FormControl('', [Validators.required]),
       surname: new FormControl('', [Validators.required]),
-      username: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required, Validators.minLength(5)]),
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
       password_confirm: new FormControl('', [Validators.required]),
