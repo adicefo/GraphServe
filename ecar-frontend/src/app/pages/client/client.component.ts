@@ -134,6 +134,8 @@ export class ClientComponent implements OnInit{
   }
   addClient():void{
     console.log('addClient');
+    this.addClientModal=true;
+    this.resetForm();
   }
   saveDriver(): void {
     this.formSubmitted = true;

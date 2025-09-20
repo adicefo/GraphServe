@@ -571,3 +571,22 @@
     font-size: 14px;
     margin-top: 5px;
 }
+
+.btn-cancel {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-save {
+    background-color: #FFD700;
+    color: black;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+

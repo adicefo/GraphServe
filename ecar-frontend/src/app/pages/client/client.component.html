@@ -182,7 +182,135 @@
                 </div>
             </div>
         </div>
+        
+        <div class="modal" *ngIf="addClientModal" (click)="closeClientModal()">
+            <div class="modal-content" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h4>Add New Client</h4>
+                    <button class="btn-close" (click)="closeClientModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="clientForm" (ngSubmit)="saveDriver()">
+                        <div class="form-field">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" formControlName="name" />
+                            <div class="error-message"
+                                *ngIf="clientForm.get('name')?.invalid && (clientForm.get('name')?.dirty || clientForm.get('name')?.touched || formSubmitted)">
+                                <span *ngIf="clientForm.get('name')?.errors?.['required']">Name is required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['name']">{{ formErrors['name'] }}</div>
+                        </div>
 
+                        <div class="form-field">
+                            <label for="surname">Surname:</label>
+                            <input type="text" id="surname" formControlName="surname" />
+                            <div class="error-message"
+                                *ngIf="clientForm.get('surname')?.invalid && (clientForm.get('surname')?.dirty || clientForm.get('surname')?.touched || formSubmitted)">
+                                <span *ngIf="clientForm.get('surname')?.errors?.['required']">Surname is required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['surname']">{{ formErrors['surname'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" formControlName="username" />
+                            <div class="error-message"
+                                *ngIf="clientForm.get('username')?.invalid && (clientForm.get('username')?.dirty || clientForm.get('username')?.touched || formSubmitted)">
+                                <span *ngIf="clientForm.get('username')?.errors?.['required']">Username is
+                                    required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['username']">{{ formErrors['username'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" formControlName="email" />
+                            <div class="error-message"
+                                *ngIf="clientForm.get('email')?.invalid && (clientForm.get('email')?.dirty || clientForm.get('email')?.touched || formSubmitted)">
+                                <span *ngIf="clientForm.get('email')?.errors?.['required']">Email is required</span>
+                                <span *ngIf="clientForm.get('email')?.errors?.['email']">Please enter a valid
+                                    email</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['email']">{{ formErrors['email'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" formControlName="password" />
+                            <div class="error-message"
+                                *ngIf="clientForm.get('password')?.invalid && (clientForm.get('password')?.dirty || clientForm.get('password')?.touched || formSubmitted)">
+                                <span *ngIf="clientForm.get('password')?.errors?.['required']">Password is
+                                    required</span>
+                                <span *ngIf="clientForm.get('password')?.errors?.['minlength']">Password must be at
+                                    least 6 characters</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['password']">{{ formErrors['password'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="password_confirm">Confirm Password:</label>
+                            <input type="password" id="password_confirm" formControlName="password_confirm" />
+                            <div class="error-message"
+                                *ngIf="clientForm.get('password_confirm')?.invalid && (clientForm.get('password_confirm')?.dirty || clientForm.get('password_confirm')?.touched || formSubmitted)">
+                                <span *ngIf="clientForm.get('password_confirm')?.errors?.['required']">Please confirm
+                                    your password</span>
+                            </div>
+                            <div class="error-message"
+                                *ngIf="clientForm.errors?.['passwordMismatch'] && (clientForm.get('password_confirm')?.dirty || clientForm.get('password_confirm')?.touched || formSubmitted)">
+                                Passwords don't match
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['password_confirm']">{{
+                                formErrors['password_confirm'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="telephone_number">Phone:</label>
+                            <input type="text" id="telephone_number" formControlName="telephone_number" />
+                            <div class="error-message"
+                                *ngIf="clientForm.get('telephone_number')?.invalid && (clientForm.get('telephone_number')?.dirty || clientForm.get('telephone_number')?.touched || formSubmitted)">
+                                <span *ngIf="clientForm.get('telephone_number')?.errors?.['required']">Phone number is
+                                    required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['telephone_number']">{{
+                                formErrors['telephone_number'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" formControlName="gender">
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            <div class="error-message"
+                                *ngIf="clientForm.get('gender')?.invalid && (clientForm.get('gender')?.dirty || clientForm.get('gender')?.touched || formSubmitted)">
+                                <span *ngIf="clientForm.get('gender')?.errors?.['required']">Gender is required</span>
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['gender']">{{ formErrors['gender'] }}</div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="active">Active:</label>
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" id="active" formControlName="active" />
+                            </div>
+                            <div class="error-message" *ngIf="formErrors['active']">{{ formErrors['active'] }}</div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-cancel" (click)="closeClientModal()">
+                                <i class="bi bi-arrow-left"></i>
+                                Close
+                            </button>
+                            <button type="submit" class="btn-save">
+                                <i class="bi bi-save"></i>
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         
     </div>
 </div>
