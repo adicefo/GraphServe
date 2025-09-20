@@ -33,7 +33,7 @@ class ClientService:
     )
 
     return client_dto
-def get_all_clients(self) -> ResultPage[ClientDTO]:
+ def get_all_clients(self) -> ResultPage[ClientDTO]:
         clients_dto: list[ClientDTO] = []
 
         for client in Client.nodes.all():          
