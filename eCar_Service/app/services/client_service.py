@@ -3,6 +3,7 @@ import uuid
 from app.models.domain import User, Client
 from app.models.responses import UserDTO, ClientDTO,ResultPage
 from app.models.requests import UserInsertRequest
+from app.models.search_objects import ClientSearchObject
 from app import config
 from neomodel import db
 from automapper import mapper
@@ -33,23 +34,41 @@ class ClientService:
     )
 
     return client_dto
- def get_all_clients(self) -> ResultPage[ClientDTO]:
+ def get_all_clients(self,search:ClientSearchObject) -> ResultPage[ClientDTO]:
         clients_dto: list[ClientDTO] = []
 
-        for client in Client.nodes.all():          
-            user = client.user.single()          
-            user_dto = mapper.to(UserDTO).map(user)
+    
+        name = search.name or ""
+        surname = search.surname or ""
 
-            clinet_dto = mapper.to(ClientDTO).map(
+        query = """
+    MATCH (c:Client)-[:IS]->(u:User)
+    WHERE ($name = "" OR toLower(u.name) CONTAINS toLower($name))
+      AND ($surname = "" OR toLower(u.surname) CONTAINS toLower($surname))
+    RETURN c, u
+    """
+
+        results, meta = db.cypher_query(query, {
+        "name": name,
+        "surname": surname
+    })
+
+        for c, u in results:
+            client = Client.inflate(c)
+            user = User.inflate(u)
+
+            user_dto = mapper.to(UserDTO).map(user)
+            client_dto = mapper.to(ClientDTO).map(
                 client,
                 fields_mapping={"user_id": user.uid, "user": user_dto},
             )
-            clients_dto.append(clinet_dto)
-        response=ResultPage[ClientDTO]
-        response.result=clients_dto
-        response.count=len(Client.nodes)
+            clients_dto.append(client_dto)
+
+        response = ResultPage[ClientDTO]
+        response.result = clients_dto
+        response.count = len(clients_dto)
         return response
-def create_client(self, request: UserInsertRequest):
+ def create_client(self, request: UserInsertRequest):
         if request.password != request.password_conifrm:
             raise ValueError("Passwords do not match")
         hashed_password = pwd_context.hash(request.password)
@@ -83,7 +102,7 @@ def create_client(self, request: UserInsertRequest):
         })
 
         return client_dto
-def delete_client(self, cid: str) -> ClientDTO:
+ def delete_client(self, cid: str) -> ClientDTO:
    
 
         try:

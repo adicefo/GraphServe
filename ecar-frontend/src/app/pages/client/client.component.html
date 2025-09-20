@@ -38,7 +38,7 @@
         <div class="status-container">
             <div class="loading" *ngIf="isLoading">
                 <div class="spinner"></div>
-                <p>Loading drivers...</p>
+                <p>Loading clients...</p>
             </div>
 
             <div class="error" *ngIf="error">
@@ -67,9 +67,17 @@
                     <div class="client-stats">
                         
                     </div>
+                    <div class="client-contact" *ngIf="client.user?.email">
+                        <i class="bi bi-envelope"></i>
+                        <span>{{ client.user?.email }}</span>
+                    </div>
                     <div class="client-contact" *ngIf="client.user?.telephone_number">
                         <i class="bi bi-telephone"></i>
                         <span>{{ client.user?.telephone_number }}</span>
+                    </div>
+                    <div class="client-contact" *ngIf="!client.user?.telephone_number">
+                        <i class="bi bi-telephone"></i>
+                        <span>N/A</span>
                     </div>
                 </div>
             </div>
