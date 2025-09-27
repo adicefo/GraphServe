@@ -274,4 +274,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+ecar-frontend\src\environments\environment.ts
+ecar-frontend\src\environments\environment.prod.ts
+
 # End of https://www.gitignore.io/api/linux,macos,python,pycharm,windows,visualstudiocode

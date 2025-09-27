@@ -1,34 +1,37 @@
 <div class="login-container">
   <div class="login-card">
+    <!-- Logo Section -->
     <div class="logo-circle">
-<img src="assets/55283.png" alt="logo" />
-
+      <img src="assets/55283.png" alt="eCar Logo" />
     </div>
 
-    <h2 class="title">Login Page</h2>
+    <!-- Welcome Title -->
+    <h2 class="title">Welcome Back</h2>
 
-    <!-- Username -->
-    <input
-      type="text"
-      [(ngModel)]="username"
-      placeholder="Enter your username"
-    />
+    <!-- Login Form -->
+    <form (ngSubmit)="login()" #loginForm="ngForm">
+      <!-- Username Field -->
+      <input type="text" [(ngModel)]="username" name="username" placeholder="Username" required autocomplete="username"
+        #usernameInput="ngModel" />
 
-    <!-- Password -->
-    <div class="password-wrapper">
-      <input
-        [type]="isObscured ? 'password' : 'text'"
-        [(ngModel)]="password"
-        placeholder="Enter your password"
-      />
-      <button type="button" class="eye-btn" (click)="toggleVisibility()">
-        {{ isObscured ? '👁️‍🗨️' : '👁️' }}
+      <!-- Password Field -->
+      <div class="password-wrapper">
+        <input [type]="isObscured ? 'password' : 'text'" [(ngModel)]="password" name="password" placeholder="Password"
+          required autocomplete="current-password" #passwordInput="ngModel" />
+        <button type="button" class="eye-btn" (click)="toggleVisibility()"
+          [attr.aria-label]="isObscured ? 'Show password' : 'Hide password'"
+          title="{{ isObscured ? 'Show password' : 'Hide password' }}">
+          {{ isObscured ? '👁️' : '🙈' }}
+        </button>
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" class="login-btn" [disabled]="!loginForm.valid">
+        Sign In
       </button>
-    </div>
-
-    <!-- Login button -->
-    <button class="login-btn" (click)="login()">LOGIN</button>
+    </form>
   </div>
 
-  <p class="footer">&#64;eCar Admin Panel</p>
+  <!-- Footer -->
+  <p class="footer">© 2025 eCar Intuitive Management</p>
 </div>

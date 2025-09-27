@@ -1,89 +1,196 @@
+/* Component host styling to override global Bootstrap */
+:host {
+  display: block;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .login-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height:100vh;
-  background-color: #f3f4f6;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .login-card {
-  width: 350px;
-  padding: 50px;
-  height: 350px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 3rem 2.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
   text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
 }
 
 .logo-circle {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 16px auto;
-  background-color: #ffeb3b;
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 1.5rem auto;
+  background: linear-gradient(135deg, #ffd700, #ffed4a);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.logo-circle:hover {
+  transform: scale(1.05);
 }
 
 .logo-circle img {
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
 }
 
 .title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 24px;
-  color: #000;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: #2d3748;
+  letter-spacing: -0.025em;
 }
 
+/* Input styling with better UX */
 input {
-  width: 90%;
-  padding: 12px;
-  margin-bottom: 16px;
-  border: 1.5px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  background-color: #f9f9f9;
+  width: 100% !important;
+  padding: 1rem 1.25rem !important;
+  margin-bottom: 1.5rem !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  font-size: 1rem !important;
+  background-color: #f8fafc !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
+  font-family: inherit !important;
 }
 
+input:focus {
+  outline: none !important;
+  border-color: #667eea !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+  transform: translateY(-2px) !important;
+}
 
+input::placeholder {
+  color: #a0aec0 !important;
+  font-weight: 400 !important;
+}
+
+/* Password wrapper styling */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
 
 .password-wrapper input {
-  flex: 1;
+  margin-bottom: 0 !important;
+  padding-right: 3rem !important;
 }
 
 .eye-btn {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  margin-left: -40px;
+  position: absolute;
+  right: 1rem;
+  background: none !important;
+  border: none !important;
+  font-size: 1.25rem !important;
+  cursor: pointer !important;
+  color: #718096 !important;
+  transition: color 0.2s ease !important;
+  padding: 0.25rem !important;
+  border-radius: 4px !important;
 }
 
+.eye-btn:hover {
+  color: #667eea !important;
+  background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Modern button styling */
 .login-btn {
-  width: 100%;
-  padding: 12px;
-  background-color: #ffeb3b;
-  color: black;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 16px;
+  width: 100% !important;
+  padding: 1rem 1.5rem !important;
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  font-size: 1.1rem !important;
+  margin-top: 1rem !important;
+  transition: all 0.3s ease !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
 }
 
 .login-btn:hover {
-  background-color: #fdd835;
+  background: linear-gradient(135deg, #5a67d8, #6b46c1) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
 }
 
+.login-btn:active {
+  transform: translateY(0) !important;
+}
+
+.login-btn:disabled {
+  background: linear-gradient(135deg, #a0aec0, #718096) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.login-btn:disabled:hover {
+  background: linear-gradient(135deg, #a0aec0, #718096) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Footer styling */
 .footer {
-  margin-top: 20px;
-  font-size: 16px;
-  font-weight: bold;
-  color: black;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .logo-circle {
+    width: 75px;
+    height: 75px;
+  }
+
+  .logo-circle img {
+    width: 45px;
+    height: 45px;
+  }
 }
