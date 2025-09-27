@@ -1,3 +1,240 @@
 <div class="route-container">
     <app-master currentRoute="Routes"></app-master>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Routes Management</h2>
+                    <button class="btn btn-primary" (click)="openAddModal()" [disabled]="!googleMapsLoaded">
+                        <i class="fas fa-plus me-2"></i>Add New Route
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Google Maps Loading -->
+        <div *ngIf="!googleMapsLoaded" class="alert alert-info">
+            <i class="fas fa-map-marker-alt me-2"></i>Loading Google Maps API...
+        </div>
+
+        <!-- Routes Grid -->
+        <div *ngIf="!loading" class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Routes List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div *ngIf="routes.length === 0" class="text-center py-4">
+                            <i class="fas fa-route fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No routes found. Click "Add New Route" to create your first route.</p>
+                        </div>
+
+                        <div *ngIf="routes.length > 0" class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Source</th>
+                                        <th>Destination</th>
+                                        <th>Client</th>
+                                        <th>Driver</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let route of routes">
+                                        <td>{{route.id || 'N/A'}}</td>
+                                        <td>
+                                            <div class="small">
+                                                <strong>Lat:</strong> {{route.source_point_lat || 'N/A'}}<br>
+                                                <strong>Lng:</strong> {{route.source_point_lon || 'N/A'}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="small">
+                                                <strong>Lat:</strong> {{route.destination_point_lat || 'N/A'}}<br>
+                                                <strong>Lng:</strong> {{route.destination_point_lon || 'N/A'}}
+                                            </div>
+                                        </td>
+                                        <td>{{getClientName(route.client_id)}}</td>
+                                        <td>{{getDriverName(route.driver_id)}}</td>
+                                        <td>
+                                            <span [class]="getStatusBadgeClass(route.status)">
+                                                {{route.status || 'Unknown'}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button *ngIf="route.status === 'wait'" class="btn btn-outline-primary"
+                                                    (click)="activateRoute(route)" title="Activate Route">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                                <button *ngIf="route.status === 'active'"
+                                                    class="btn btn-outline-success" (click)="finishRoute(route)"
+                                                    title="Finish Route">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Route Modal -->
+    <div class="modal fade" [class.show]="showAddModal" [style.display]="showAddModal ? 'block' : 'none'"
+        [attr.aria-hidden]="!showAddModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Route</h5>
+                    <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <!-- Source Location -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="sourceAddress" class="form-label">Source Address</label>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control" [class.is-invalid]="errors.source"
+                                        id="sourceAddress" [(ngModel)]="formData.sourceAddress"
+                                        (input)="onSourceSearch($event)"
+                                        placeholder="Start typing to search for a location..." name="sourceAddress">
+
+                                    <!-- Source Predictions Dropdown -->
+                                    <div *ngIf="showSourcePredictions && sourcePredictions.length > 0"
+                                        class="position-absolute w-100 bg-white border rounded shadow-sm mt-1"
+                                        style="z-index: 1000; max-height: 200px; overflow-y: auto;">
+                                        <div *ngFor="let place of sourcePredictions"
+                                            class="p-2 border-bottom cursor-pointer hover-item"
+                                            (click)="selectPlace(place, true)">
+                                            {{place.description}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="errors.source" class="invalid-feedback d-block">
+                                    {{errors.source}}
+                                </div>
+
+                                <!-- Source Coordinates -->
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <label class="form-label small">Latitude</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            [value]="formData.source_point_lat" readonly>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">Longitude</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            [value]="formData.source_point_lon" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Destination Location -->
+                            <div class="col-md-6">
+                                <label for="destinationAddress" class="form-label">Destination Address</label>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control" [class.is-invalid]="errors.destination"
+                                        id="destinationAddress" [(ngModel)]="formData.destinationAddress"
+                                        (input)="onDestSearch($event)"
+                                        placeholder="Start typing to search for a location..."
+                                        name="destinationAddress">
+
+                                    <!-- Destination Predictions Dropdown -->
+                                    <div *ngIf="showDestPredictions && destPredictions.length > 0"
+                                        class="position-absolute w-100 bg-white border rounded shadow-sm mt-1"
+                                        style="z-index: 1000; max-height: 200px; overflow-y: auto;">
+                                        <div *ngFor="let place of destPredictions"
+                                            class="p-2 border-bottom cursor-pointer hover-item"
+                                            (click)="selectPlace(place, false)">
+                                            {{place.description}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="errors.destination" class="invalid-feedback d-block">
+                                    {{errors.destination}}
+                                </div>
+
+                                <!-- Destination Coordinates -->
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <label class="form-label small">Latitude</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            [value]="formData.destination_point_lat" readonly>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">Longitude</label>
+                                        <input type="text" class="form-control form-control-sm"
+                                            [value]="formData.destination_point_lon" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client and Driver Selection -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="client_id" class="form-label">Client</label>
+                                <select class="form-control" [class.is-invalid]="errors.client_id" id="client_id"
+                                    [(ngModel)]="formData.client_id" name="client_id">
+                                    <option value="">Select Client</option>
+                                    <option *ngFor="let client of clients" [value]="client.cid">
+                                        {{client.user?.name || ''}} {{client.user?.surname || ''}}
+                                    </option>
+                                </select>
+                                <div *ngIf="errors.client_id" class="invalid-feedback d-block">
+                                    {{errors.client_id}}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="driver_id" class="form-label">Driver</label>
+                                <select class="form-control" [class.is-invalid]="errors.driver_id" id="driver_id"
+                                    [(ngModel)]="formData.driver_id" name="driver_id">
+                                    <option value="">Select Driver</option>
+                                    <option *ngFor="let driver of drivers" [value]="driver.did">
+                                        {{driver.user?.name || ''}} {{driver.user?.surname || ''}}
+                                    </option>
+                                </select>
+                                <div *ngIf="errors.driver_id" class="invalid-feedback d-block">
+                                    {{errors.driver_id}}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeAddModal()">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" (click)="saveRoute()" [disabled]="loading">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                        Save Route
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Backdrop -->
+    <div *ngIf="showAddModal" class="modal-backdrop fade show"></div>
 </div>
