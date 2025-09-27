@@ -26,14 +26,13 @@ export class RouteComponent implements OnInit, OnDestroy {
   showAddModal = false;
   errors: any = {};
 
-  // Google Maps related
   googleMapsLoaded = false;
   sourcePredictions: GooglePlacePrediction[] = [];
   destPredictions: GooglePlacePrediction[] = [];
   showSourcePredictions = false;
   showDestPredictions = false;
 
-  // Form data
+
   formData = {
     source_point_lat: 0,
     source_point_lon: 0,
@@ -71,6 +70,8 @@ export class RouteComponent implements OnInit, OnDestroy {
     );
     this.subscriptions.push(googleMapsSubscription);
   }
+
+
 
   private loadData(): void {
     this.loading = true;
@@ -238,10 +239,11 @@ export class RouteComponent implements OnInit, OnDestroy {
   }
 
   async activateRoute(route: Route): Promise<void> {
-    if (!route.id) return;
+    const routeId = route.id || route.rid;
+    if (!routeId) return;
 
     this.loading = true;
-    const activateSubscription = this.routeService.update(route.id, {}).subscribe({
+    const activateSubscription = this.routeService.update(routeId, {}).subscribe({
       next: (response) => {
         console.log('Route activated successfully');
         this.loading = false;
@@ -257,10 +259,11 @@ export class RouteComponent implements OnInit, OnDestroy {
   }
 
   async finishRoute(route: Route): Promise<void> {
-    if (!route.id) return;
+    const routeId = route.id || route.rid;
+    if (!routeId) return;
 
     this.loading = true;
-    const finishSubscription = this.routeService.updateFinish(route.id).subscribe({
+    const finishSubscription = this.routeService.updateFinish(routeId).subscribe({
       next: (response) => {
         console.log('Route finished successfully');
         this.loading = false;
@@ -275,16 +278,31 @@ export class RouteComponent implements OnInit, OnDestroy {
     this.subscriptions.push(finishSubscription);
   }
 
-  getClientName(clientId?: string): string {
-    if (!clientId) return 'N/A';
-    const client = this.clients.find(c => c.cid === clientId);
-    return client && client.user ? `${client.user.name || ''} ${client.user.surname || ''}`.trim() : 'N/A';
+  getClientName(route: Route): string {
+    if (route.client && route.client.user) {
+      const user = route.client.user;
+      return `${user.name || ''} ${user.surname || ''}`.trim() || 'N/A';
+    }
+    return 'N/A';
   }
 
-  getDriverName(driverId?: string): string {
-    if (!driverId) return 'N/A';
-    const driver = this.drivers.find(d => d.did === driverId);
-    return driver && driver.user ? `${driver.user.name || ''} ${driver.user.surname || ''}`.trim() : 'N/A';
+  getDriverName(route: Route): string {
+    if (route.driver && route.driver.user) {
+      const user = route.driver.user;
+      return `${user.name || ''} ${user.surname || ''}`.trim() || 'N/A';
+    }
+    return 'N/A';
+  }
+
+
+
+  getFormattedAddress(lat?: number, lng?: number): string {
+    if (!lat || !lng) {
+      return 'N/A';
+    }
+
+    // Simple coordinate display to avoid freezing
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
   }
 
   getStatusBadgeClass(status?: string): string {

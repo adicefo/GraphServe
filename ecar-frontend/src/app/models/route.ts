@@ -3,6 +3,7 @@ import { Driver } from "./driver";
 
 export interface Route {
     id?: string;
+    rid?: string;  // Route ID from API
     source_point_lat?: number;
     source_point_lon?: number;
     destination_point_lat?: number;

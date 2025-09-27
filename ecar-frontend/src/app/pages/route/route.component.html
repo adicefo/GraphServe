@@ -41,10 +41,10 @@
                         </div>
 
                         <div *ngIf="routes.length > 0" class="table-responsive">
-                            <table class="table table-striped table-hover">
+                            <table class="table table-striped table-hover routes-table">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th>ID</th>
+                                        
                                         <th>Source</th>
                                         <th>Destination</th>
                                         <th>Client</th>
@@ -55,21 +55,20 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let route of routes">
-                                        <td>{{route.id || 'N/A'}}</td>
+                                      
                                         <td>
                                             <div class="small">
-                                                <strong>Lat:</strong> {{route.source_point_lat || 'N/A'}}<br>
-                                                <strong>Lng:</strong> {{route.source_point_lon || 'N/A'}}
+                                                {{getFormattedAddress(route.source_point_lat, route.source_point_lon)}}
                                             </div>
                                         </td>
                                         <td>
                                             <div class="small">
-                                                <strong>Lat:</strong> {{route.destination_point_lat || 'N/A'}}<br>
-                                                <strong>Lng:</strong> {{route.destination_point_lon || 'N/A'}}
+                                                {{getFormattedAddress(route.destination_point_lat,
+                                                route.destination_point_lon)}}
                                             </div>
                                         </td>
-                                        <td>{{getClientName(route.client_id)}}</td>
-                                        <td>{{getDriverName(route.driver_id)}}</td>
+                                        <td>{{getClientName(route)}}</td>
+                                        <td>{{getDriverName(route)}}</td>
                                         <td>
                                             <span [class]="getStatusBadgeClass(route.status)">
                                                 {{route.status || 'Unknown'}}

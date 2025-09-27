@@ -134,6 +134,56 @@
     border-color: #198754;
 }
 
+/* Address display styling */
+.address-text {
+    font-size: 0.875rem;
+    line-height: 1.3;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.loading-address {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Improve table column widths */
+.routes-table th:nth-child(1) {
+    width: 80px;
+}
+
+/* ID */
+.routes-table th:nth-child(2) {
+    width: 200px;
+}
+
+/* Source */
+.routes-table th:nth-child(3) {
+    width: 200px;
+}
+
+/* Destination */
+.routes-table th:nth-child(4) {
+    width: 150px;
+}
+
+/* Client */
+.routes-table th:nth-child(5) {
+    width: 150px;
+}
+
+/* Driver */
+.routes-table th:nth-child(6) {
+    width: 100px;
+}
+
+/* Status */
+.routes-table th:nth-child(7) {
+    width: 100px;
+}
+
+/* Actions */
+
 @media (max-width: 768px) {
     .table-responsive {
         font-size: 0.875rem;
@@ -146,5 +196,14 @@
 
     .modal-dialog {
         margin: 0.5rem;
+    }
+
+    .address-text {
+        font-size: 0.75rem;
+    }
+
+    .routes-table th:nth-child(2),
+    .routes-table th:nth-child(3) {
+        width: 150px;
     }
 }

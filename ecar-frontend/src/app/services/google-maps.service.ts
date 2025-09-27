@@ -12,7 +12,7 @@ export class GoogleMapsService {
     public isLoaded$ = this.isLoadedSubject.asObservable();
 
     private autocompleteService: google.maps.places.AutocompleteService | null = null;
-    private geocoderService: google.maps.Geocoder | null = null;
+    private geocoder: google.maps.Geocoder | null = null;
     private placesService: google.maps.places.PlacesService | null = null;
     private map: google.maps.Map | null = null;
 
@@ -60,7 +60,7 @@ export class GoogleMapsService {
             });
 
             this.autocompleteService = new window.google.maps.places.AutocompleteService();
-            this.geocoderService = new window.google.maps.Geocoder();
+            this.geocoder = new window.google.maps.Geocoder();
             this.placesService = new window.google.maps.places.PlacesService(this.map);
 
             this.isLoadedSubject.next(true);
@@ -135,27 +135,24 @@ export class GoogleMapsService {
     /**
      * Get address from latitude and longitude
      */
-    getAddressFromLatLng(latitude: number, longitude: number): Promise<string> {
+    async getAddressFromLatLng(lat: number, lng: number): Promise<string> {
+        if (!this.geocoder) {
+          return 'Loading...';
+        }
+    
         return new Promise((resolve, reject) => {
-            if (!this.geocoderService) {
-                reject('Geocoder service not initialized');
-                return;
+          this.geocoder!.geocode(
+            { location: { lat: parseFloat(lat.toString()), lng: parseFloat(lng.toString()) } },
+            (results, status) => {
+              if (status === 'OK' && results && results.length > 0) {
+                resolve(results[0].formatted_address);
+              } else {
+                reject('Address not found');
+              }
             }
-
-            this.geocoderService.geocode(
-                {
-                    location: { lat: parseFloat(latitude.toString()), lng: parseFloat(longitude.toString()) },
-                },
-                (results,status) => {
-                    if (status === 'OK' && results && results.length > 0) {
-                        resolve(results[0].formatted_address);
-                    } else {
-                        reject('Address not found');
-                    }
-                }
-            );
+          );
         });
-    }
+      }
 
     /**
      * Clean up resources
