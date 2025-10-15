@@ -8,7 +8,7 @@
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">Routes Management</h2>
-                    <button class="btn btn-primary" (click)="openAddModal()" [disabled]="!googleMapsLoaded">
+                    <button  class="addBtn"  (click)="openAddModal()" [disabled]="!googleMapsLoaded">
                         <i class="fas fa-plus me-2"></i>Add New Route
                     </button>
                 </div>
@@ -225,7 +225,7 @@
                     <button type="button" class="btn btn-secondary" (click)="closeAddModal()">
                         Cancel
                     </button>
-                    <button type="button" class="btn btn-primary" (click)="saveRoute()" [disabled]="loading">
+                    <button type="button" class="btn btn-primary" style="background-color: #ffd700 !important; color:black !important;" (click)="saveRoute()" [disabled]="loading">
                         <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
                         Save Route
                     </button>

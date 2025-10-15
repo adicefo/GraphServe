@@ -301,7 +301,6 @@ export class RouteComponent implements OnInit, OnDestroy {
       return 'N/A';
     }
 
-    // Simple coordinate display to avoid freezing
     return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
   }
 
