@@ -19,7 +19,7 @@ import { Subscription, forkJoin } from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class RouteComponent implements OnInit, OnDestroy {
-  routes: Route[] = [];
+  routes: any[] = [];
   clients: Client[] = [];
   drivers: Driver[] = [];
   loading = false;
@@ -31,7 +31,8 @@ export class RouteComponent implements OnInit, OnDestroy {
   destPredictions: GooglePlacePrediction[] = [];
   showSourcePredictions = false;
   showDestPredictions = false;
-
+  sourceAddress:any;
+  destinationAddress:any;
 
   formData = {
     source_point_lat: 0,
@@ -74,27 +75,52 @@ export class RouteComponent implements OnInit, OnDestroy {
 
 
   private loadData(): void {
-    this.loading = true;
-    const routesRequest = this.routeService.getAll();
-    const clientsRequest = this.clientService.getAll();
-    const driversRequest = this.driverService.getAll();
+  this.loading = true;
+  const routesRequest = this.routeService.getAll();
+  const clientsRequest = this.clientService.getAll();
+  const driversRequest = this.driverService.getAll();
 
-    const dataSubscription = forkJoin([routesRequest, clientsRequest, driversRequest])
-      .subscribe({
-        next: ([routesResponse, clientsResponse, driversResponse]) => {
-          this.routes = routesResponse.result || [];
-          this.clients = clientsResponse.result || [];
-          this.drivers = driversResponse.result || [];
-          this.loading = false;
-        },
-        error: (error) => {
-          console.error('Error loading data:', error);
-          this.loading = false;
+  const dataSubscription = forkJoin([routesRequest, clientsRequest, driversRequest])
+    .subscribe({
+      next: async ([routesResponse, clientsResponse, driversResponse]) => {
+        this.routes = routesResponse.result || [];
+        this.clients = clientsResponse.result || [];
+        this.drivers = driversResponse.result || [];
+
+        // 🟡 Convert coordinates to addresses
+        for (const route of this.routes) {
+          try {
+            if (route.source_point_lat && route.source_point_lon) {
+              route.sourceAddress = await this.googleMapsService.getAddressLatLng(
+                route.source_point_lat,
+                route.source_point_lon
+              );
+            }
+
+            if (route.destination_point_lat && route.destination_point_lon) {
+              route.destinationAddress = await this.googleMapsService.getAddressLatLng(
+                route.destination_point_lat,
+                route.destination_point_lon
+              );
+            }
+          } catch (error) {
+            console.error('Error getting address:', error);
+            this.sourceAddress = 'Unknown';
+            this.destinationAddress = 'Unknown';
+          }
         }
-      });
 
-    this.subscriptions.push(dataSubscription);
-  }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading data:', error);
+        this.loading = false;
+      }
+    });
+
+  this.subscriptions.push(dataSubscription);
+}
+
 
   openAddModal(): void {
     this.showAddModal = true;

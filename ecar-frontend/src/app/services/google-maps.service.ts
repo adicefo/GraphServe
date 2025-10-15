@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { GooglePlacePrediction, GooglePlaceDetails } from '../models/route';
-import { google } from '../types/google-maps.types';
 
 @Injectable({
     providedIn: 'root'
@@ -135,24 +134,61 @@ export class GoogleMapsService {
     /**
      * Get address from latitude and longitude
      */
-    async getAddressFromLatLng(lat: number, lng: number): Promise<string> {
-        if (!this.geocoder) {
-          return 'Loading...';
-        }
-    
-        return new Promise((resolve, reject) => {
-          this.geocoder!.geocode(
-            { location: { lat: parseFloat(lat.toString()), lng: parseFloat(lng.toString()) } },
-            (results, status) => {
-              if (status === 'OK' && results && results.length > 0) {
-                resolve(results[0].formatted_address);
-              } else {
-                reject('Address not found');
-              }
+   async getAddressLatLng(lat: number, lng: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const geocoder = new google.maps.Geocoder();
+    const latlng = { lat, lng };
+
+    geocoder.geocode({ location: latlng }, (results: any, status: any) => {
+      if (status === 'OK' && results.length > 0) {
+        let address = '';
+
+        for (const result of results) {
+          const components = result.address_components;
+
+          const city =
+            components.find((c: any) => c.types.includes('locality'))?.long_name ||
+            components.find((c: any) => c.types.includes('administrative_area_level_2'))?.long_name;
+
+          const country = components.find((c: any) => c.types.includes('country'))?.long_name;
+
+          const street = components.find((c: any) => c.types.includes('route'))?.long_name;
+          const number = components.find((c: any) => c.types.includes('street_number'))?.long_name;
+
+          if (city || street) {
+            address = '';
+            if (street && number) address += `${street} ${number}`;
+            else if (street) address += street;
+
+            if (city) {
+              if (address) address += ', ';
+              address += city;
             }
-          );
-        });
+
+            if (country) {
+              if (address) address += ', ';
+              address += country;
+            }
+
+            if (address) break; // stop at first proper address
+          }
+        }
+
+        // fallback if no readable address found
+        if (!address) {
+          address = results[0].formatted_address || 'Unknown location';
+        }
+
+        resolve(address);
+      } else {
+        reject('No address found');
       }
+    });
+  });
+}
+
+
+
 
     /**
      * Clean up resources

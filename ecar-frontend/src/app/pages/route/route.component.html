@@ -57,16 +57,16 @@
                                     <tr *ngFor="let route of routes">
                                       
                                         <td>
-                                            <div class="small">
-                                                {{getFormattedAddress(route.source_point_lat, route.source_point_lon)}}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="small">
-                                                {{getFormattedAddress(route.destination_point_lat,
-                                                route.destination_point_lon)}}
-                                            </div>
-                                        </td>
+  <div class="small">
+    {{ route.sourceAddress.slice(0,1)==='8'?'Unknown':route.sourceAddress  }}
+  </div>
+</td>
+<td>
+  <div class="small">
+    {{ route.destinationAddress.slice(0,1)==='8'?'Unknown':route.destinationAddress}}
+  </div>
+</td>
+
                                         <td>{{getClientName(route)}}</td>
                                         <td>{{getDriverName(route)}}</td>
                                         <td>
