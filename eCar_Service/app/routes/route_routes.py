@@ -16,7 +16,12 @@ def get_all_routes( service: RouteService = Depends(get_route_service)):
 @router.post("/", response_model=RouteDTO)
 def create_route(request: RouteInsertRequest, service: RouteService = Depends(get_route_service)):
     return service.create_route(request)
-
+@router.put("/update-active/{rid}", response_model=bool)
+def update_active(rid:str, service: RouteService = Depends(get_route_service)):
+    return service.update_active(rid)
+@router.put("/update-finish/{rid}", response_model=bool)
+def update_active(rid:str, service: RouteService = Depends(get_route_service)):
+    return service.update_finish(rid)
 @router.delete("/{rid}",response_model=RouteDTO)
 def remove_route(rid:str,service:RouteService=Depends(get_route_service)):
     return service.delete_route(rid)

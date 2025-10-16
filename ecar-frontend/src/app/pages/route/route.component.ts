@@ -87,7 +87,6 @@ export class RouteComponent implements OnInit, OnDestroy {
         this.clients = clientsResponse.result || [];
         this.drivers = driversResponse.result || [];
 
-        // 🟡 Convert coordinates to addresses
         for (const route of this.routes) {
           try {
             if (route.source_point_lat && route.source_point_lon) {
@@ -284,14 +283,35 @@ export class RouteComponent implements OnInit, OnDestroy {
     this.subscriptions.push(activateSubscription);
   }
 
-  async finishRoute(route: Route): Promise<void> {
-    const routeId = route.id || route.rid;
+  async activeRoute(route: Route): Promise<void> {
+    const routeId = route.rid;
+    if (!routeId) return;
+
+    this.loading = true;
+    const activateSubscription = this.routeService.updateActive(routeId).subscribe({
+      next: (response) => {
+        if(response===true)
+          console.log('Route active successfully');
+        this.loading = false;
+        this.loadData();
+      },
+      error: (error) => {
+        console.error('Error finishing route:', error);
+        this.loading = false;
+      }
+    });
+
+    this.subscriptions.push(activateSubscription);
+  }
+   async finishRoute(route: Route): Promise<void> {
+    const routeId = route.rid;
     if (!routeId) return;
 
     this.loading = true;
     const finishSubscription = this.routeService.updateFinish(routeId).subscribe({
       next: (response) => {
-        console.log('Route finished successfully');
+        if(response===true)
+          console.log('Route finished successfully');
         this.loading = false;
         this.loadData();
       },
@@ -313,7 +333,7 @@ export class RouteComponent implements OnInit, OnDestroy {
   }
 
   getDriverName(route: Route): string {
-    if (route.driver && route.driver.user) {
+    if (route.driver  && route.driver.user) {
       const user = route.driver.user;
       return `${user.name || ''} ${user.surname || ''}`.trim() || 'N/A';
     }

@@ -52,7 +52,28 @@ class RouteService:
 
         return route_dto         
     
-  
+     def update_active(self,rid:str)->bool:
+        try:
+            route: Route = Route.nodes.get(rid=rid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Route with id '{rid}' not found",
+            )
+        route.status="active"
+        route.save()
+        return True
+     def update_finish(self,rid:str)->bool:
+        try:
+            route: Route = Route.nodes.get(rid=rid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Route with id '{rid}' not found",
+            )
+        route.status="finish"
+        route.save()
+        return True
      def get_all_routes(self):
         routes_dto: list[RouteDTO] = []
 

@@ -30,14 +30,19 @@ export class RouteService extends BaseService<Route> {
     }
 
     /**
-     * Update route status to finished
+     * Update route status to active
      * @param id - Route ID
      * @returns Observable of API response
      */
-    updateFinish(id: string): Observable<Route> {
-        const url = `${this.baseUrl}/${this.endpoint}/${id}/finish`;
-        return this.http.put<Route>(url, {});
-    }
+   updateActive(rid: string): Observable<boolean> {
+  const url = `${this.baseUrl}/${this.endpoint}`+'/update-active/'+rid;
+  console.log(url);
+  return this.http.put<boolean>(url, {});
+}
 
+updateFinish(rid:string):Observable<boolean>{
+    const url = `${this.baseUrl}/${this.endpoint}`+'/update-finish/'+rid;
+    return this.http.put<boolean>(url,{});
+}
  
 }
