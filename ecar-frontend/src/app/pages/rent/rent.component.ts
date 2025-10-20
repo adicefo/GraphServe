@@ -109,18 +109,19 @@ export class RentComponent implements OnInit, OnDestroy {
     console.log("passed validation");
     this.loading = true;
      const rentDateISO = this.formData.rent_date
-    ? new Date(this.formData.rent_date + 'T00:00:00Z')
-    : new Date(1,1,2025);
+    ? new Date(this.formData.rent_date + 'T00:00:00Z').toISOString()
+    : '';
   const endDateISO = this.formData.end_date
-    ? new Date(this.formData.end_date + 'T00:00:00Z')
-    : new Date(1,1,2025);
+    ? new Date(this.formData.end_date + 'T00:00:00Z').toISOString()
+    :'';
     const rentData:CreateRentRequest={
       rent_date: rentDateISO,
       end_date: endDateISO,
       vehicle_id: this.formData.vehicle_id,
       client_id: this.formData.client_id,
     };
-    const saveSubscription = this.rentService.create(rentData).subscribe({
+    console.log(rentData);
+    const saveSubscription = this.rentService.createRent(rentData).subscribe({
       next: (res) => {
         this.loading = false;
         console.log('Rent created successfully');

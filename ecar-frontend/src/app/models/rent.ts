@@ -15,8 +15,8 @@ export interface Rent{
 }
 
 export interface CreateRentRequest {
-    rent_date?: Date;
-    end_date?: Date;
-    vehicle_id?: String;
-    client_id?: String;
+    rent_date?: string;
+    end_date?: string;
+    vehicle_id?: string;
+    client_id?: string;
 }

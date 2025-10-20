@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator, model_validator
+from pydantic import BaseModel, EmailStr, ValidationInfo, field_validator, model_validator
 from typing import Optional
 import re,datetime
 from fastapi import HTTPException
@@ -102,11 +102,12 @@ class RentInsertRequest(BaseModel):
     vehicle_id: str
     client_id: str
 
-    @model_validator(mode="after")
-    def validate_dates(cls, values):
-        if values.end_date <= values.rent_date:
+    @field_validator('end_date')
+    def validate_dates(cls, v, info: ValidationInfo):
+        rent_date = info.data.get('rent_date')
+        if rent_date and v <= rent_date:
             raise ValueError("End date must be after rent date")
-        return values
+        return v
 
 class ReviewInsertRequest(BaseModel):
     value:int
