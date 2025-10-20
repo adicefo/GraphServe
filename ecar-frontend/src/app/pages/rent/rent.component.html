@@ -1,1 +1,134 @@
-<p>rent works!</p>
+<div class="rent-container">
+    <app-master currentRoute="Rents"></app-master>
+    <div class="container-fluid mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Rents Management</h2>
+                    <button class="addBtn" (click)="openAddModal()">
+                        <i class="fas fa-plus me-2"></i>Add New Rent
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <div *ngIf="!loading" class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Rents List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div *ngIf="rents.length === 0" class="text-center py-4">
+                            <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No rents found. Click "Add New Rent" to create your first rent.</p>
+                        </div>
+                        <div *ngIf="rents.length > 0" class="table-responsive">
+                            <table class="table table-striped table-hover rents-table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Rent Date</th>
+                                        <th>End Date</th>
+                                        <th>Vehicle</th>
+                                        <th>Client</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let rent of rents">
+                                        <td>
+                                            <span [class]="getStatusBadgeClass(rent.status)">
+                                                {{rent.status || 'Unknown'}}
+                                            </span>
+                                        </td>
+                                        <td>{{rent.rent_date | date:'yyyy-MM-dd'}}</td>
+                                        <td>{{rent.end_date | date:'yyyy-MM-dd'}}</td>
+                                        <td>{{getVehicleName(rent)}}</td>
+                                        <td>{{getClientName(rent)}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Rent Modal -->
+    <div class="modal fade" [class.show]="showAddModal" [style.display]="showAddModal ? 'block' : 'none'"
+        [attr.aria-hidden]="!showAddModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Rent</h5>
+                    <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="rent_date" class="form-label">Rent Date</label>
+                                <input type="date" class="form-control" [class.is-invalid]="errors.rent_date"
+                                    id="rent_date" [(ngModel)]="formData.rent_date" name="rent_date">
+                                <div *ngIf="errors.rent_date" class="invalid-feedback d-block">
+                                    {{errors.rent_date}}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" [class.is-invalid]="errors.end_date"
+                                    id="end_date" [(ngModel)]="formData.end_date" name="end_date">
+                                <div *ngIf="errors.end_date" class="invalid-feedback d-block">
+                                    {{errors.end_date}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="vehicle_id" class="form-label">Vehicle</label>
+                                <select class="form-control" [class.is-invalid]="errors.vehicle_id" id="vehicle_id"
+                                    [(ngModel)]="formData.vehicle_id" name="vehicle_id">
+                                    <option value="">Select Vehicle</option>
+                                    <option *ngFor="let vehicle of vehicles" [value]="vehicle.vid">
+                                        {{vehicle.name}}
+                                    </option>
+                                </select>
+                                <div *ngIf="errors.vehicle_id" class="invalid-feedback d-block">
+                                    {{errors.vehicle_id}}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="client_id" class="form-label">Client</label>
+                                <select class="form-control" [class.is-invalid]="errors.client_id" id="client_id"
+                                    [(ngModel)]="formData.client_id" name="client_id">
+                                    <option value="">Select Client</option>
+                                    <option *ngFor="let client of clients" [value]="client.cid">
+                                        {{client.user?.name || ''}} {{client.user?.surname || ''}}
+                                    </option>
+                                </select>
+                                <div *ngIf="errors.client_id" class="invalid-feedback d-block">
+                                    {{errors.client_id}}
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeAddModal()">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" (click)="saveRent()" >
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                        Save Rent
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="showAddModal" class="modal-backdrop fade show"></div>
+</div>

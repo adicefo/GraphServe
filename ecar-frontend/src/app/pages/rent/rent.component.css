@@ -1,0 +1,76 @@
+.rent-container {
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding-bottom: 40px;
+}
+
+.addBtn {
+    background-color: #ffd700 !important;
+    color: #222 !important;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 18px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.addBtn:hover, .addBtn:focus {
+    background-color: #ffe066 !important;
+    color: #111 !important;
+}
+
+.rents-table th, .rents-table td {
+    vertical-align: middle;
+    font-size: 1rem;
+}
+
+.rents-table .badge {
+    font-size: 0.95em;
+    padding: 0.4em 0.8em;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.card-header {
+    background: #343a40;
+    color: #fff;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-content {
+    border-radius: 10px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+}
+
+.invalid-feedback {
+    font-size: 0.95em;
+}
+
+.table-responsive {
+    margin-top: 1rem;
+}
+
+.spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+@media (max-width: 768px) {
+    .card-header, .card-body {
+        padding: 1rem;
+    }
+    .addBtn {
+        width: 100%;
+        margin-top: 1rem;
+    }
+}

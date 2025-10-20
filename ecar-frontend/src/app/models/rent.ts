@@ -13,3 +13,10 @@ export interface Rent{
     vehicle?:Vehicle;
     client?:Client;
 }
+
+export interface CreateRentRequest {
+    rent_date?: Date;
+    end_date?: Date;
+    vehicle_id?: String;
+    client_id?: String;
+}
