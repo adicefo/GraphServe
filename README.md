@@ -12,7 +12,6 @@ A backend service built with **FastAPI** and **Neo4j** graph database for modeli
 - **Docker** – Containerized development environment (Neo4j runs in Docker).
 - **Neomodel** - OGM (Object Graph Mapper) for the Neo4j graph database.
 - **Angular** - JavaScript framework for making intuitive mangement frontend app.
-- 
 
 ## 🚀 Running the Application
 First, clone the repository to your local machine:
