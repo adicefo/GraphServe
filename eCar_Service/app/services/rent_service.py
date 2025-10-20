@@ -68,7 +68,28 @@ class RentService:
         response.count=len(Rent.nodes)
         response.result=rents_dto
         return response
-    
+     def update_active(self,rid:str)->bool:
+        try:
+            rent: Rent = Rent.nodes.get(rid=rid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Rent with id '{rid}' not found",
+            )
+        rent.status="active"
+        rent.save()
+        return True
+     def update_finish(self,rid:str)->bool:
+        try:
+            rent: Rent = Rent.nodes.get(rid=rid)
+        except (DoesNotExist, MultipleNodesReturned):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Rent with id '{rid}' not found",
+            )
+        rent.status="finish"
+        rent.save()
+        return True
 
      def create_rent(self,request:RentInsertRequest):
         client = Client.nodes.get_or_none(cid=request.client_id)
